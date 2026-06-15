@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lock Tracker">
+<title>Lock Tracker — ASSA ABLOY Marine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   LOCK TRACKER — Marine Grade UI v3
+   ASSA ABLOY Hospitality · Naval Operations
+   ══════════════════════════════════════════════════════ */
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+/* ── TOKEN SYSTEM ── */
+:root{
+  /* Surface hierarchy */
+  --surface-0: #EEF2F7;   /* page bg */
+  --surface-1: #FFFFFF;   /* card */
+  --surface-2: #F6F8FB;   /* inset / input bg */
+  --surface-3: #E4EAF2;   /* pressed / divider */
+  --surface-header: #F0F4F8; /* section headers */
+
+  /* Text scale */
+  --t-primary:   #0C1C2E;  /* main content */
+  --t-secondary: #3D5A73;  /* supporting */
+  --t-muted:     #7A98B0;  /* placeholders, labels */
+  --t-disabled:  #B0C4D4;
+
+  /* Brand */
+  --navy:   #0C1C2E;
+  --ocean:  #1762A8;
+  --steel:  #2E7FC0;
+
+  /* Semantic — maximally distinct */
+  --success:      #00873E;
+  --success-soft: #E0F5EA;
+  --success-border: rgba(0,135,62,.18);
+  --success-text: #006830;
+
+  --danger:       #C8200E;
+  --danger-soft:  #FCECEA;
+  --danger-border: rgba(200,32,14,.15);
+  --danger-text:  #9B1500;
+
+  --warn:         #B45309;
+  --warn-soft:    #FEF3CD;
+  --warn-text:    #854003;
+
+  /* Keep original action button color */
+  --blue: #007aff;
+
+  /* Borders */
+  --border:   #D6E0EA;
+  --border-strong: #B8CAD8;
+
+  /* Shape */
+  --r-lg:  16px;
+  --r-md:  12px;
+  --r-sm:  9px;
+  --r-pill: 100px;
+
+  /* Elevations */
+  --e1: 0 1px 2px rgba(12,28,46,.06), 0 0 0 1px rgba(12,28,46,.05);
+  --e2: 0 3px 8px rgba(12,28,46,.09), 0 0 0 1px rgba(12,28,46,.05);
+  --e3: 0 8px 24px rgba(12,28,46,.13), 0 0 0 1px rgba(12,28,46,.06);
+
+  /* Legacy aliases — keep JS working */
+  --bg: var(--surface-0);
+  --bg2: var(--surface-1);
+  --bg3: var(--surface-3);
+  --bg-card: var(--surface-1);
+  --text: var(--t-primary);
+  --text2: var(--t-secondary);
+  --text3: var(--t-muted);
+  --border2: var(--border-strong);
+  --green: var(--success);
+  --green-bg: var(--success-soft);
+  --green-text: var(--success-text);
+  --red: var(--danger);
+  --red-bg: var(--danger-soft);
+  --red-text: var(--danger-text);
+  --amber: var(--warn);
+  --amber-text: var(--warn-text);
+  --amber-bg: var(--warn-soft);
+  --ocean-focus: rgba(23,98,168,.14);
+  --radius: var(--r-lg);
+  --radius-sm: var(--r-md);
+  --radius-xs: var(--r-sm);
+  --shadow: var(--e1);
+  --shadow-md: var(--e3);
+  --navy-rgb: 12,28,46;
+}
+
+@media(prefers-color-scheme:dark){:root{
+  --surface-0: #0A1520;
+  --surface-1: #0F1E30;
+  --surface-2: #152437;
+  --surface-3: #1C2F44;
+  --surface-header: #111E2D;
+  --t-primary:   #DDE8F2;
+  --t-secondary: #7DA4BE;
+  --t-muted:     #445F75;
+  --t-disabled:  #2A3F52;
+  --border:   #1C2F44;
+  --border-strong: #253D54;
+  --success-soft:  #062915;
+  --success-text:  #27C766;
+  --danger-soft:   #280805;
+  --danger-text:   #FF6B5B;
+  --warn-soft:     #2A1800;
+  --warn-text:     #FBB030;
+  --e1: 0 1px 2px rgba(0,0,0,.25), 0 0 0 1px rgba(255,255,255,.04);
+  --e2: 0 3px 8px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.04);
+  --e3: 0 8px 24px rgba(0,0,0,.5),  0 0 0 1px rgba(255,255,255,.05);
+  --navy-rgb: 10,21,32;
+}}
+
+/* ── RESET & BASE ── */
+html,body{
+  height:100%;
+  background:var(--surface-0);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  color:var(--t-primary);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-size:16px;
+  line-height:1.5;
+}
+.app{display:flex;flex-direction:column;height:100%;height:100dvh}
+
+/* ── TOPBAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.7rem 1rem;
+  padding-top:max(.7rem,env(safe-area-inset-top));
+  background:var(--navy);
+  min-height:60px;
+  flex-shrink:0;
+  position:relative;
+}
+/* Horizon line — the signature element */
+.topbar::before{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    #1762A8 15%,
+    #00873E 50%,
+    #1762A8 85%,
+    transparent 100%);
+}
+.topbar-c{flex:1;text-align:center;min-width:0}
+.topbar h1{
+  font-size:15px;font-weight:700;
+  color:#FFFFFF;letter-spacing:.3px;
+  white-space:nowrap;
+}
+.sub{
+  font-size:11px;font-weight:600;
+  color:rgba(255,255,255,.42);
+  margin-top:1px;letter-spacing:.5px;
+  font-variant-numeric:tabular-nums;
+  font-family:'JetBrains Mono','Courier New',monospace;
+}
+/* Icon buttons in topbar */
+.ibtn{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.85);font-size:18px;flex-shrink:0;
+  transition:background .12s;
+  font-family:inherit;
+}
+.ibtn:active{background:rgba(255,255,255,.18)}
+.ibtn-red{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(200,32,14,.2);
+  border:1px solid rgba(200,32,14,.35);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:rgba(255,130,115,.9);font-size:18px;flex-shrink:0;
+  font-family:inherit;
+}
+.ibtn-red:active{background:rgba(200,32,14,.35)}
+
+/* ── NAVIGATION TABS ── */
+.tabs{
+  display:flex;
+  background:var(--surface-1);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.tab{
+  flex:1;
+  padding:.8rem .5rem;
+  font-size:12.5px;font-weight:600;
+  text-align:center;
+  color:var(--t-muted);
+  border:none;background:none;cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+  letter-spacing:.25px;
+  text-transform:uppercase;
+  font-family:inherit;
+}
+.tab.active{
+  color:var(--ocean);
+  border-bottom-color:var(--ocean);
+}
+
+/* ── SCROLLABLE CONTENT ── */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+/* ── STATS BAR ── */
+.statsbar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  flex-shrink:0;
+  background:var(--surface-1);
+  border-bottom:1px solid var(--border);
+}
+.si{
+  padding:.9rem .3rem .8rem;
+  text-align:center;
+  border-right:1px solid var(--border);
+}
+.si:last-child{border-right:none}
+.sn{
+  font-size:24px;font-weight:800;
+  line-height:1;letter-spacing:-1px;
+  font-variant-numeric:tabular-nums;
+  font-family:'Inter','JetBrains Mono',sans-serif;
+}
+.sn.g{color:var(--success)}
+.sn.a{color:var(--warn)}
+.sl{
+  font-size:9.5px;font-weight:700;
+  color:var(--t-muted);
+  margin-top:5px;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+
+/* ── SEARCH AREA ── */
+.sw{
+  padding:.85rem 1rem .45rem;
+  background:var(--surface-0);
+}
+.sb{
+  display:flex;align-items:center;
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:var(--r-md);
+  padding:0 13px;gap:10px;
+  box-shadow:var(--e1);
+}
+.sb input{
+  flex:1;padding:12px 0;
+  font-size:15px;font-weight:400;
+  border:none;background:none;
+  color:var(--t-primary);outline:none;
+  font-family:inherit;
+}
+.sb input::placeholder{color:var(--t-muted);font-weight:400}
+
+/* ── FILTER ROW ── */
+.fr{
+  display:flex;gap:8px;
+  padding:.35rem 1rem .8rem;
+  background:var(--surface-0);
+  overflow-x:auto;scrollbar-width:none;
+}
+.fr::-webkit-scrollbar{display:none}
+.fr select{
+  font-size:13px;font-weight:500;
+  padding:8px 28px 8px 13px;
+  border:1px solid var(--border);
+  border-radius:var(--r-pill);
+  background:var(--surface-1);
+  color:var(--t-primary);
+  flex-shrink:0;
+  -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%233D5A73'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 11px center;
+  box-shadow:var(--e1);
+  font-family:inherit;
+  cursor:pointer;
+}
+
+/* ── CABIN LIST ── */
+.cl{padding:.8rem 1rem;padding-bottom:6rem}
+
+/* The core card — where most time is spent */
+.cc{
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:0;
+  margin-bottom:9px;
+  display:flex;align-items:stretch;justify-content:space-between;
+  cursor:pointer;
+  box-shadow:var(--e1);
+  overflow:hidden;
+  transition:box-shadow .12s,transform .08s;
+}
+.cc:active{
+  transform:scale(.993);
+  box-shadow:none;
+  background:var(--surface-2);
+}
+/* Left accent strip — instant done/pending read */
+.cc-strip{
+  width:4px;
+  flex-shrink:0;
+  background:var(--border);
+}
+.cc.is-done .cc-strip{background:var(--success)}
+.cc.is-pending .cc-strip{background:var(--danger)}
+
+.cc-body{
+  flex:1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1rem;
+}
+.cleft{flex:1;min-width:0}
+.cn{
+  font-size:16px;font-weight:600;
+  letter-spacing:-.3px;
+  color:var(--t-primary);
+}
+.cd{
+  font-size:11.5px;font-weight:600;
+  color:var(--t-muted);
+  margin-top:3px;
+  text-transform:uppercase;
+  letter-spacing:.55px;
+}
+.cr{display:flex;align-items:center;gap:10px;flex-shrink:0}
+
+/* Status badges */
+.badge{
+  font-size:11.5px;font-weight:700;
+  padding:4px 11px;
+  border-radius:var(--r-pill);
+  flex-shrink:0;
+  letter-spacing:.25px;
+  white-space:nowrap;
+}
+.bdone{
+  background:var(--success-soft);
+  color:var(--success-text);
+  border:1px solid var(--success-border);
+}
+.bpend{
+  background:var(--danger-soft);
+  color:var(--danger-text);
+  border:1px solid var(--danger-border);
+}
+
+/* Delete button on card */
+.db{
+  width:30px;height:30px;border-radius:var(--r-sm);
+  background:var(--danger-soft);
+  border:1px solid var(--danger-border);
+  cursor:pointer;color:var(--danger-text);
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.db:active{opacity:.6}
+
+/* Empty state */
+.empty{
+  text-align:center;padding:4rem 1.5rem;
+  color:var(--t-muted);font-size:15px;font-weight:500;
+  line-height:1.6;
+}
+.empty::before{
+  content:'⚓';
+  display:block;font-size:32px;margin-bottom:1rem;opacity:.35;
+}
+
+/* ── BOTTOM SHEETS ── */
+.ov{
+  position:fixed;inset:0;
+  background:rgba(var(--navy-rgb),.6);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  z-index:200;display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .22s;
+}
+.ov.open{opacity:1;pointer-events:all}
+.sh{
+  background:var(--surface-1);
+  border-radius:22px 22px 0 0;
+  padding:1.35rem 1.35rem;
+  padding-bottom:max(1.75rem,env(safe-area-inset-bottom));
+  width:100%;max-width:520px;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.32,.72,0,1);
+  box-shadow:0 -6px 32px rgba(var(--navy-rgb),.2);
+}
+.ov.open .sh{transform:translateY(0)}
+.hnd{
+  width:44px;height:4px;
+  background:var(--border-strong);border-radius:2px;
+  margin:0 auto 1.4rem;
+}
+.sh h2{
+  font-size:20px;font-weight:700;
+  margin-bottom:3px;letter-spacing:-.4px;
+  color:var(--t-primary);
+}
+.ss{font-size:13px;color:var(--t-secondary);margin-bottom:1.25rem;line-height:1.5}
+
+/* Form inside sheet */
+.fi{padding:.95rem 0;border-bottom:1px solid var(--border)}
+.fi:last-of-type{border-bottom:none;padding-bottom:0}
+.fi label{
+  font-size:10.5px;font-weight:700;
+  color:var(--t-muted);
+  display:block;margin-bottom:8px;
+  text-transform:uppercase;letter-spacing:.8px;
+}
+.fi input,.fi textarea,.fi select{
+  font-size:15px;font-weight:400;
+  width:100%;padding:12px 13px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r-md);
+  background:var(--surface-2);
+  color:var(--t-primary);outline:none;
+  -webkit-appearance:none;
+  font-family:inherit;
+  transition:border-color .15s,box-shadow .15s;
+}
+.fi input:focus,.fi textarea:focus,.fi select:focus{
+  border-color:var(--ocean);
+  box-shadow:0 0 0 3px var(--ocean-focus);
+}
+.fi textarea{height:78px;resize:none;line-height:1.6}
+
+/* Toggle / programmed switch */
+.tr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 0;border-bottom:1px solid var(--border);
+}
+.tl{font-size:15.5px;font-weight:500;color:var(--t-primary)}
+.tg{
+  width:54px;height:32px;border-radius:16px;
+  background:var(--border-strong);border:none;cursor:pointer;
+  position:relative;transition:background .2s;flex-shrink:0;
+}
+.tg.on{background:var(--success)}
+.tg::after{
+  content:'';position:absolute;
+  width:26px;height:26px;border-radius:50%;
+  background:#fff;top:3px;left:3px;
+  transition:left .2s;
+  box-shadow:0 2px 6px rgba(0,0,0,.22);
+}
+.tg.on::after{left:25px}
+
+/* Sheet action buttons */
+.sa{display:flex;gap:10px;margin-top:1.4rem}
+.bs{
+  flex:1;padding:15px;
+  font-size:15.5px;font-weight:600;
+  background:var(--blue);color:#fff;
+  border:none;border-radius:var(--r-lg);
+  cursor:pointer;font-family:inherit;
+  letter-spacing:.1px;
+}
+.bs:active{opacity:.82}
+.bc{
+  padding:15px 20px;
+  font-size:15.5px;font-weight:500;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  color:var(--t-secondary);
+  cursor:pointer;font-family:inherit;
+}
+
+/* ── DECKS TAB ── */
+.dki{
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:1rem 1rem;
+  margin-bottom:9px;
+  display:flex;align-items:center;
+  box-shadow:var(--e1);
+}
+.dkn{font-size:15px;font-weight:600;flex:1;letter-spacing:-.15px;color:var(--t-primary)}
+.dkc{font-size:12px;font-weight:500;color:var(--t-secondary);margin-right:10px}
+.dkb{display:flex;gap:8px;align-items:center}
+.dke{
+  padding:7px 16px;font-size:12.5px;font-weight:600;
+  border:1.5px solid var(--border);border-radius:var(--r-pill);
+  background:none;color:var(--blue);cursor:pointer;font-family:inherit;
+}
+.dke:active{background:var(--surface-2)}
+.dkd{
+  width:32px;height:32px;border-radius:var(--r-sm);
+  background:var(--danger-soft);
+  border:1px solid var(--danger-border);
+  cursor:pointer;color:var(--danger-text);font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── REPORT TAB ── */
+.rp{padding:1rem 1rem 6rem}
+.st{
+  font-size:10px;font-weight:700;
+  color:var(--t-muted);
+  text-transform:uppercase;letter-spacing:.9px;
+  margin-bottom:9px;
+  padding-left:2px;
+}
+.pc{
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  padding:1.1rem 1.1rem;
+  margin-bottom:10px;
+  box-shadow:var(--e1);
+}
+.ph{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin-bottom:10px}
+.ph span:first-child{font-weight:600;color:var(--t-primary)}
+.ph span:last-child{font-size:12px;font-weight:600;color:var(--t-muted);font-variant-numeric:tabular-nums}
+.pb{height:7px;background:var(--surface-3);border-radius:4px;overflow:hidden}
+.pf{height:100%;background:var(--success);border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+.dl{
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  overflow:hidden;margin-bottom:10px;
+  box-shadow:var(--e1);
+}
+.dr{display:flex;align-items:center;padding:.85rem 1rem;border-bottom:1px solid var(--border)}
+.dr:last-child{border-bottom:none}
+.dn{font-size:14px;font-weight:600;flex:1;color:var(--t-primary)}
+.dc{
+  font-size:12px;font-weight:700;
+  color:var(--t-secondary);margin-right:12px;
+  min-width:42px;text-align:right;
+  font-variant-numeric:tabular-nums;
+  font-family:'JetBrains Mono',monospace;
+}
+.mb{width:62px;height:5px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.mf{height:100%;background:var(--success);border-radius:3px}
+
+.eb{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;padding:16px;
+  font-size:15px;font-weight:600;
+  background:var(--blue);color:#fff;
+  border:none;border-radius:var(--r-lg);
+  cursor:pointer;margin-bottom:1rem;
+  font-family:inherit;letter-spacing:.1px;
+}
+.eb:active{opacity:.82}
+.eb:disabled{opacity:.6;cursor:not-allowed}
+
+.ec{
+  background:var(--surface-1);
+  border:1px solid var(--border);
+  border-radius:var(--r-lg);
+  overflow:hidden;margin-bottom:2rem;
+  box-shadow:var(--e1);
+}
+.eh{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 1rem;
+  border-bottom:1px solid var(--border);
+  background:var(--surface-header);
+}
+.eh span{font-size:13px;font-weight:600;color:var(--t-primary)}
+.cpb{
+  font-size:12px;font-weight:600;
+  padding:5px 14px;
+  border:1px solid var(--border);border-radius:var(--r-pill);
+  background:var(--surface-1);color:var(--t-secondary);
+  cursor:pointer;font-family:inherit;
+}
+.ebody{
+  padding:1rem;font-size:13px;line-height:1.85;
+  color:var(--t-primary);white-space:pre-wrap;
+  max-height:260px;overflow-y:auto;
+}
+
+/* ── CONFIRM DIALOGS ── */
+.co{
+  position:fixed;inset:0;
+  background:rgba(var(--navy-rgb),.65);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  z-index:300;display:flex;align-items:center;justify-content:center;
+  padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.co.open{opacity:1;pointer-events:all}
+.cb2{
+  background:var(--surface-1);
+  border-radius:var(--r-lg);
+  padding:1.75rem 1.5rem;
+  width:100%;max-width:300px;
+  text-align:center;
+  box-shadow:var(--e3);
+  border:1px solid var(--border);
+}
+.cb2 h3{font-size:18px;font-weight:700;margin-bottom:.6rem;letter-spacing:-.3px}
+.cb2 p{font-size:14px;color:var(--t-secondary);margin-bottom:1.4rem;line-height:1.6}
+.ca{display:flex;gap:8px}
+.bd{
+  flex:1;padding:13px;font-size:15px;font-weight:700;
+  background:var(--danger);color:#fff;border:none;
+  border-radius:var(--r-md);cursor:pointer;font-family:inherit;
+}
+.bk{
+  flex:1;padding:13px;font-size:15px;font-weight:500;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:var(--r-md);
+  color:var(--t-primary);cursor:pointer;font-family:inherit;
+}
+
+/* ── BULK PANELS ── */
+.bmod-overlay{
+  position:fixed;inset:0;
+  background:rgba(var(--navy-rgb),.6);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  z-index:250;opacity:0;pointer-events:none;transition:opacity .22s;
+}
+.bmod-overlay.open{opacity:1;pointer-events:all}
+.bmod-sheet{
+  position:fixed;inset:0;top:auto;
+  background:var(--surface-1);
+  border-radius:22px 22px 0 0;
+  z-index:251;max-height:88vh;
+  display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.32,.72,0,1);
+  box-shadow:0 -6px 32px rgba(var(--navy-rgb),.2);
+}
+.bmod-sheet.open{transform:translateY(0)}
+.bmod-header{
+  padding:1.1rem 1.1rem .8rem;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.bmod-title{font-size:18px;font-weight:700;letter-spacing:-.3px;color:var(--t-primary)}
+.bmod-sub{font-size:12.5px;font-weight:500;color:var(--t-secondary);margin-top:4px}
+.bmod-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.bmod-footer{
+  padding:1rem 1.1rem;
+  border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:9px;
+  padding-bottom:max(1rem,env(safe-area-inset-bottom));
+  flex-shrink:0;
+  background:var(--surface-header);
+}
+
+.bulk-row{
+  display:flex;align-items:center;
+  padding:.88rem 1.1rem;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;gap:13px;
+  background:var(--surface-1);
+  transition:background .1s;
+}
+.bulk-row:active{background:var(--surface-2)}
+.bulk-row.selected{background:var(--success-soft)}
+.bulk-check{
+  width:24px;height:24px;border-radius:7px;
+  border:2px solid var(--border-strong);
+  flex-shrink:0;display:flex;align-items:center;
+  justify-content:center;font-size:13px;color:transparent;
+  transition:all .12s;
+}
+.bulk-check.on{background:var(--success);border-color:var(--success);color:#fff}
+.bulk-num{font-size:15px;font-weight:600;color:var(--t-primary)}
+.bulk-dk{font-size:12px;font-weight:500;color:var(--t-secondary);margin-top:2px;letter-spacing:.2px}
+
+.filter-pills{display:flex;gap:6px}
+.filter-pills button{
+  flex:1;padding:8px 6px;
+  font-size:12px;font-weight:700;
+  border-radius:var(--r-sm);
+  border:1px solid var(--border);
+  background:var(--surface-2);
+  color:var(--t-secondary);
+  cursor:pointer;font-family:inherit;
+  letter-spacing:.15px;
+  transition:background .1s,color .1s;
+}
+.filter-pills button:active{background:var(--surface-3)}
+
+.panel-search-area{
+  padding:.8rem 1.1rem;
+  background:var(--surface-0);
+  border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;gap:9px;
+  flex-shrink:0;
+}
+.panel-search-row{display:flex;gap:7px;align-items:center}
+.panel-search-row input{
+  flex:1;font-size:14px;font-weight:400;
+  padding:10px 12px;
+  border:1.5px solid var(--border);
+  border-radius:var(--r-md);
+  background:var(--surface-1);
+  color:var(--t-primary);outline:none;font-family:inherit;
+}
+.panel-search-row input:focus{border-color:var(--ocean);box-shadow:0 0 0 3px var(--ocean-focus)}
+.panel-search-row button{
+  padding:10px 14px;font-size:12.5px;font-weight:700;
+  border:1.5px solid var(--border);border-radius:var(--r-md);
+  background:var(--surface-1);color:var(--blue);
+  cursor:pointer;white-space:nowrap;font-family:inherit;
+}
+.panel-range-row{display:flex;gap:7px;align-items:center}
+.panel-range-row input{
+  flex:1;font-size:13px;font-weight:400;
+  padding:9px 12px;
+  border:1px solid var(--border);border-radius:var(--r-md);
+  background:var(--surface-1);color:var(--t-primary);
+  outline:none;font-family:inherit;
+}
+.panel-range-info{font-size:11px;font-weight:600;color:var(--t-muted);min-height:14px;letter-spacing:.2px}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:5.5rem;left:50%;
+  transform:translateX(-50%);
+  background:var(--navy);color:#fff;
+  padding:11px 22px;border-radius:var(--r-pill);
+  font-size:13px;font-weight:600;z-index:999;
+  opacity:0;transition:opacity .2s;
+  pointer-events:none;white-space:nowrap;
+  box-shadow:var(--e3);
+  border:1px solid rgba(255,255,255,.1);
+  font-family:'Inter',sans-serif;
+}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:6px;min-width:80px">
+      <span style="font-size:12px;font-weight:800;color:rgba(255,255,255,.92);letter-spacing:1px;text-transform:uppercase;line-height:1">ASSA ABLOY</span>
+      <span style="font-size:18px;line-height:1;opacity:.7">⚓</span>
+    </div>
+    <div class="topbar-c">
+      <h1>LOCK TRACKER</h1>
+      <div class="sub" id="topsub">Loading…</div>
+    </div>
+    <div style="display:flex;gap:5px">
+      <button class="ibtn-red" onclick="openBulkDelete()" title="Delete cabins" style="font-size:17px">&#8722;</button>
+      <button class="ibtn" onclick="openBulkStatus()" title="Change status" style="font-size:14px;font-weight:800;background:rgba(0,135,62,.2);border-color:rgba(0,135,62,.35);color:rgba(0,200,90,.9)">&#10003;</button>
+      <button class="ibtn" onclick="openBulkEdit()" title="Edit cabins" style="font-size:14px">&#9998;</button>
+      <button class="ibtn" onclick="topAction()" style="font-size:22px;font-weight:200;line-height:1">+</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="sw('tracker')">Tracker</button>
+    <button class="tab" onclick="sw('decks')">Decks</button>
+    <button class="tab" onclick="sw('report')">Report</button>
+  </div>
+  <div id="tab-tracker" class="content">
+    <div class="statsbar" id="statsbar"></div>
+    <div class="sw"><div class="sb">
+      <span style="color:var(--text3);font-size:14px">&#128269;</span>
+      <input type="search" id="search" placeholder="Search cabin or deck..." oninput="renderList()">
+    </div></div>
+    <div class="fr">
+      <select id="fdeck" onchange="renderList()"><option value="">All decks</option></select>
+      <select id="fst" onchange="renderList()"><option value="">All status</option><option value="done">Done</option><option value="pending">Pending</option></select>
+    </div>
+    <div class="cl" id="clist"></div>
+  </div>
+  <div id="tab-decks" class="content" style="display:none"><div class="cl" id="dlist"></div></div>
+  <div id="tab-report" class="content" style="display:none"><div id="rbody"></div></div>
+</div>
+
+<!-- EDIT SINGLE CABIN -->
+<div class="ov" id="emod" onclick="oc(event,'emod')"><div class="sh">
+  <div class="hnd"></div><h2 id="etit">Edit Cabin</h2><p class="ss" id="edkl"></p>
+  <div class="tr"><span class="tl">Programmed</span><button class="tg" id="ptg" onclick="togProg()"></button></div>
+  <div class="fi"><label>Date programmed</label><input type="date" id="pdt"></div>
+  <div class="fi" style="opacity:.5;pointer-events:none"><label>Cabin number <span style="font-size:10px;color:var(--text3)">(locked)</span></label><input type="text" id="ecab" readonly></div>
+  <div class="fi" style="opacity:.5;pointer-events:none"><label>Deck <span style="font-size:10px;color:var(--text3)">(locked)</span></label><select id="edk" disabled></select></div>
+  <div class="fi"><label>Notes</label><textarea id="enotes" placeholder="Optional..."></textarea></div>
+  <div class="sa"><button class="bc" onclick="closeM('emod')">Cancel</button><button class="bs" onclick="saveEdit()">Save</button></div>
+</div></div>
+
+<!-- ADD CABIN -->
+<div class="ov" id="amod" onclick="oc(event,'amod')"><div class="sh">
+  <div class="hnd"></div>
+  <h2 style="margin-bottom:.35rem">Add Cabins</h2>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6">Single: <b>101</b> &nbsp;&middot;&nbsp; Range: <b>101-110</b> &nbsp;&middot;&nbsp; List: <b>101;102;115</b> &nbsp;&middot;&nbsp; Mix: <b>101-105;120-125</b></p>
+  <div class="fi"><label>Cabin numbers</label><input type="text" id="anum" placeholder="e.g. 101-110 or 101;102;115" oninput="previewAdd()"></div>
+  <div class="fi"><label>Deck</label><select id="adk"></select></div>
+  <div id="add-preview" style="font-size:12px;color:var(--text2);padding:.4rem 0;min-height:20px;line-height:1.5"></div>
+  <div class="sa"><button class="bc" onclick="closeM('amod')">Cancel</button><button class="bs" onclick="saveAdd()">Add</button></div>
+</div></div>
+
+<!-- DECK MODAL -->
+<div class="ov" id="dkmod" onclick="oc(event,'dkmod')"><div class="sh">
+  <div class="hnd"></div><h2 id="dktit" style="margin-bottom:.4rem">Add Deck</h2>
+  <p id="dksubtxt" style="font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.5">Cabins auto-generated as <b>DeckNumber + CabinNumber</b>. e.g. Deck 19 &rarr; cabins 19001&ndash;19015</p>
+  <div class="fi"><label>Deck name or number</label><input type="text" id="dkname" placeholder="e.g. 10 or Deck 10" oninput="previewDeck()"></div>
+  <div class="fi" id="dkcab-fi"><label>Cabin range to generate (optional)</label><input type="text" id="dkcabrange" placeholder="e.g. 001-015 or leave empty" oninput="previewDeck()"></div>
+  <div class="fi" id="dkallow-fi"><label>Allowed cabin range for this deck <span style="color:var(--red);font-size:11px">*required</span></label>
+    <input type="text" id="dkallowrange" placeholder="e.g. 10100-10500" oninput="previewDeck()"
+      style="border-color:var(--border)">
+    <div style="font-size:11px;color:var(--text2);margin-top:5px">Only cabins within this range will be accepted in this deck</div>
+  </div>
+  <div id="dk-preview" style="font-size:12px;color:var(--text2);padding:.4rem 0;min-height:18px;line-height:1.5"></div>
+  <div class="sa"><button class="bc" onclick="closeM('dkmod')">Cancel</button><button class="bs" onclick="saveDeck()">Save</button></div>
+</div></div>
+
+<!-- CONFIRM SINGLE DELETE -->
+<div class="co" id="cfm"><div class="cb2">
+  <h3 id="cfmt">Delete?</h3><p id="cfmm"></p>
+  <div class="ca"><button class="bk" onclick="closeM('cfm')">Keep</button><button class="bd" onclick="doDel()">Delete</button></div>
+</div></div>
+
+<!-- ══ BULK DELETE PANEL ══ -->
+<div class="bmod-overlay" id="del-overlay" onclick="closeDel()"></div>
+<div class="bmod-sheet" id="del-sheet">
+  <div class="bmod-header"><div class="hnd" style="margin-bottom:.5rem"></div>
+    <div class="bmod-title">Delete Cabins</div>
+    <div class="bmod-sub">Select cabins to permanently delete</div>
+  </div>
+  <div class="panel-search-area">
+    <div class="panel-search-row">
+      <input type="search" id="del-search" placeholder="Search cabin or deck..." oninput="renderDelList()">
+      <button onclick="delToggleAll()" id="del-all-btn">All</button>
+    </div>
+    <div class="filter-pills">
+      <button id="del-f-all" onclick="setDelFilter('all')">All</button>
+      <button id="del-f-pending" onclick="setDelFilter('pending')">&#215; Pending</button>
+      <button id="del-f-done" onclick="setDelFilter('done')">&#10003; Done</button>
+    </div>
+    <div class="panel-range-row">
+      <input type="text" id="del-range" placeholder="Quick select: 101-110 or 101;102;115" oninput="delRangeInput()">
+    </div>
+    <div class="panel-range-info" id="del-range-info"></div>
+  </div>
+  <div class="bmod-list" id="del-list"></div>
+  <div class="bmod-footer">
+    <div style="display:flex;align-items:center;padding:0 2px"><span style="font-size:13px;color:var(--text2);flex:1" id="del-count">0 selected</span></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeDel()" style="flex:1;padding:14px;font-size:15px;background:none;border:.5px solid var(--border);border-radius:var(--radius);color:var(--text2);cursor:pointer">Cancel</button>
+      <button onclick="delConfirm()" id="del-btn" disabled style="flex:1;padding:14px;font-size:15px;font-weight:600;background:var(--red);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;opacity:.35;transition:opacity .15s">Delete selected</button>
+    </div>
+  </div>
+</div>
+<div class="co" id="del-cfm" style="z-index:400"><div class="cb2">
+  <h3>Delete cabins?</h3><p id="del-cfm-msg" style="margin-bottom:1.25rem;line-height:1.5;font-size:14px;color:var(--text2)"></p>
+  <div class="ca"><button class="bk" onclick="closeM('del-cfm')">Cancel</button><button class="bd" onclick="doDelBulk()">Delete</button></div>
+</div></div>
+
+<!-- ══ CABIN STATUS PANEL ══ -->
+<div class="bmod-overlay" id="bst-overlay" onclick="closeBst()"></div>
+<div class="bmod-sheet" id="bst-sheet">
+  <div class="bmod-header"><div class="hnd" style="margin-bottom:.5rem"></div>
+    <div class="bmod-title">Cabin Status</div>
+    <div class="bmod-sub">Select cabins to change their status</div>
+  </div>
+  <div class="panel-search-area">
+    <div class="panel-search-row">
+      <input type="search" id="bst-search" placeholder="Search cabin or deck..." oninput="renderBstList()">
+      <button onclick="bstToggleAll()" id="bst-all-btn">All</button>
+    </div>
+    <div class="filter-pills">
+      <button id="bst-f-all" onclick="setBstFilter('all')">All</button>
+      <button id="bst-f-pending" onclick="setBstFilter('pending')">&#215; Pending</button>
+      <button id="bst-f-done" onclick="setBstFilter('done')">&#10003; Done</button>
+    </div>
+    <div class="panel-range-row">
+      <input type="text" id="bst-range" placeholder="Quick select: 101-110 or 101;102;115" oninput="bstRangeInput()">
+    </div>
+    <div class="panel-range-info" id="bst-range-info"></div>
+  </div>
+  <div class="bmod-list" id="bst-list"></div>
+  <div class="bmod-footer">
+    <div style="display:flex;align-items:center;padding:0 2px"><span style="font-size:13px;color:var(--text2);flex:1" id="bst-count">0 selected</span><span style="font-size:12px;color:var(--text2)">New status:</span></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="bstConfirm(true)" id="bst-done-btn" disabled style="flex:1;padding:14px;font-size:15px;font-weight:600;background:var(--green);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;opacity:.35;transition:opacity .15s">&#10003; Done</button>
+      <button onclick="bstConfirm(false)" id="bst-pend-btn" disabled style="flex:1;padding:14px;font-size:15px;font-weight:600;background:var(--red);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;opacity:.35;transition:opacity .15s">&#215; Pending</button>
+    </div>
+    <button onclick="closeBst()" style="width:100%;padding:12px;font-size:15px;background:none;border:.5px solid var(--border);border-radius:var(--radius);color:var(--text2);cursor:pointer">Cancel</button>
+  </div>
+</div>
+<div class="co" id="bst-cfm" style="z-index:400"><div class="cb2">
+  <h3 id="bst-cfm-title">Change Status</h3><p id="bst-cfm-msg" style="margin-bottom:1.25rem;line-height:1.5;font-size:14px;color:var(--text2)"></p>
+  <div class="ca"><button class="bk" onclick="closeM('bst-cfm')">Cancel</button><button id="bst-cfm-ok" style="flex:1;padding:12px;font-size:15px;font-weight:600;border:none;border-radius:var(--radius-sm);cursor:pointer;color:#fff" onclick="bstApply()">Confirm</button></div>
+</div></div>
+
+<!-- ══ EDIT CABINS PANEL ══ -->
+<div class="bmod-overlay" id="bedit-overlay" onclick="closeBedit()"></div>
+<div class="bmod-sheet" id="bedit-sheet">
+  <div class="bmod-header"><div class="hnd" style="margin-bottom:.5rem"></div>
+    <div class="bmod-title">Edit Cabins</div>
+    <div class="bmod-sub">Tap a cabin to edit its details</div>
+  </div>
+  <div class="panel-search-area">
+    <div class="panel-search-row">
+      <input type="search" id="bedit-search" placeholder="Search cabin or deck..." oninput="renderBeditList()">
+    </div>
+  </div>
+  <div class="bmod-list" id="bedit-list"></div>
+  <div class="bmod-footer">
+    <p style="font-size:13px;color:var(--text2);text-align:center">Tap a cabin to edit its details</p>
+    <button onclick="closeBedit()" style="width:100%;padding:14px;font-size:15px;background:none;border:.5px solid var(--border);border-radius:var(--radius);color:var(--text2);cursor:pointer">Close</button>
+  </div>
+</div>
+<!-- EDIT SINGLE CABIN FROM BULK EDIT PANEL -->
+<div class="ov" id="bedit-single-modal" onclick="oc(event,'bedit-single-modal')" style="z-index:400"><div class="sh">
+  <div class="hnd"></div>
+  <h2 id="bedit-single-title">Edit Cabin</h2>
+  <p class="ss" id="bedit-single-deck"></p>
+  <div class="fi"><label>Cabin number</label><input type="text" id="bedit-single-cabin"></div>
+  <div class="fi"><label>Deck</label><select id="bedit-single-deck-sel"></select></div>
+  <div class="fi"><label>Notes</label><textarea id="bedit-single-notes" placeholder="Optional..."></textarea></div>
+  <div class="fi" style="border-bottom:none;padding-bottom:0">
+    <label>Are you sure you want to save these changes?</label>
+  </div>
+  <div class="sa">
+    <button class="bc" onclick="closeM('bedit-single-modal')">Cancel</button>
+    <button class="bs" onclick="beditSingleSave()">Save changes</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script>
+const KEY='locktracker_v3';
+let cabins=[],decks=[],editIdx=null,delTarget=null,editDkIdx=null,curTab='tracker';
+
+// ── STATE for bulk panels (all separate) ─────────────────────────────
+let delSel=new Set(), delFilter='all';
+let bstSel=new Set(), bstFilter='all', bstPendingDone=null;
+let beditSel=new Set(), beditPendingDeck=null;
+
+// ── INIT ─────────────────────────────────────────────────────────────
+function init(){
+  try{
+    const r=localStorage.getItem(KEY);
+    if(r){const d=JSON.parse(r);cabins=d.cabins||[];decks=d.decks||[];}
+    else{buildDef();persist();}
+  }catch(e){buildDef();}
+  if(!decks.length){decks=Array.from({length:20},(_,i)=>({id:'dk'+i,name:`Deck ${i+1}`}));persist();}
+  sortAll();refresh();
+}
+
+function buildDef(){
+  decks=Array.from({length:20},(_,i)=>({id:'dk'+i,name:`Deck ${i+1}`}));
+  cabins=[];
+  decks.forEach((dk,d)=>{
+    for(let c=1;c<=15;c++){
+      const num=String((d+1)*1000+c);
+      cabins.push({id:num+'_'+d,cabin:num,deck:dk.name,done:false,date:'',notes:''});
+    }
+  });
+}
+
+function persist(){try{localStorage.setItem(KEY,JSON.stringify({cabins,decks}));}catch(e){}}
+function refresh(){renderStats();renderList();buildSelects();}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// ── SORT ─────────────────────────────────────────────────────────────
+function sortAll(){
+  const dkOrder=Object.fromEntries(decks.map((d,i)=>[d.name,i]));
+  cabins.sort((a,b)=>{
+    const di=(dkOrder[a.deck]??99)-(dkOrder[b.deck]??99);
+    return di!==0?di:a.cabin.localeCompare(b.cabin,undefined,{numeric:true,sensitivity:'base'});
+  });
+  decks.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'}));
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────
+function renderStats(){
+  const tot=cabins.length,done=cabins.filter(c=>c.done).length;
+  const pr=tot?done/tot*100:0;
+  const pct=pr===0?0:pr<0.1?pr.toFixed(3):pr<1?pr.toFixed(2):pr<10?pr.toFixed(1):Math.round(pr);
+  document.getElementById('topsub').textContent=`${done} / ${tot}  ·  ${pct}%`;
+  document.getElementById('statsbar').innerHTML=
+    `<div class="si"><div class="sn">${tot}</div><div class="sl">Total</div></div>
+     <div class="si"><div class="sn g">${done}</div><div class="sl">Done</div></div>
+     <div class="si"><div class="sn" style="color:var(--danger)">${tot-done}</div><div class="sl">Pending</div></div>
+     <div class="si"><div class="sn g">${pct}<span style="font-size:14px;font-weight:600">%</span></div><div class="sl">Complete</div></div>`;
+}
+
+// ── SELECTS ───────────────────────────────────────────────────────────
+function buildSelects(){
+  const opts=decks.map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
+  ['adk','edk','bedit-deck'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  const sel=document.getElementById('fdeck'),cur=sel.value;
+  const used=new Set(cabins.map(c=>c.deck));
+  sel.innerHTML='<option value="">All decks</option>'+decks.filter(d=>used.has(d.name)).map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
+  if(cur)sel.value=cur;
+}
+
+// ── TRACKER LIST ──────────────────────────────────────────────────────
+function renderList(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const dk=document.getElementById('fdeck').value,st=document.getElementById('fst').value;
+  const f=cabins.map((c,i)=>({...c,_i:i})).filter(c=>{
+    if(q&&!c.cabin.toLowerCase().includes(q)&&!c.deck.toLowerCase().includes(q))return false;
+    if(dk&&c.deck!==dk)return false;
+    if(st==='done'&&!c.done)return false;
+    if(st==='pending'&&c.done)return false;
+    return true;
+  });
+  const el=document.getElementById('clist');
+  if(!f.length){el.innerHTML='<div class="empty">No cabins found</div>';return;}
+  el.innerHTML=f.map(c=>`<div class="cc ${c.done?'is-done':'is-pending'}" onclick="openEdit(${c._i})">
+    <div class="cc-strip"></div>
+    <div class="cc-body">
+      <div class="cleft">
+        <div class="cn">Cabin ${c.cabin}</div>
+        <div class="cd">${c.deck}${c.notes?'&nbsp;·&nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--t-muted)">'+c.notes.slice(0,28)+(c.notes.length>28?'…':'')+'</span>':''}</div>
+      </div>
+      <div class="cr">
+        <span class="badge ${c.done?'bdone':'bpend'}">${c.done?'✓ Done':'Pending'}</span>
+        <button class="db" onclick="askDel(event,${c._i})">&#215;</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+
+// ── DECKS LIST ────────────────────────────────────────────────────────
+function renderDecks(){
+  const el=document.getElementById('dlist');
+  if(!decks.length){el.innerHTML='<div class="empty">No decks. Tap + to add.</div>';return;}
+  el.innerHTML=decks.map((d,i)=>{
+    const cnt=cabins.filter(c=>c.deck===d.name).length;
+    const rangeLabel=d.allowedRange?`<span style="font-size:11px;color:var(--text2);margin-left:6px">${d.allowedRange.min}–${d.allowedRange.max}</span>`:'<span style="font-size:11px;color:var(--amber-text);margin-left:6px">No range set</span>';
+    return `<div class="dki"><div style="flex:1"><div class="dkn">${d.name}${rangeLabel}</div><div class="dkc" style="margin-top:2px">${cnt} cabin${cnt!==1?'s':''}</div></div>
+      <div class="dkb"><button class="dke" onclick="openEditDk(${i})">Edit</button><button class="dkd" onclick="askDel(event,${i},'deck')">&#215;</button></div></div>`;
+  }).join('');
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────
+function sw(tab){
+  curTab=tab;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['tracker','decks','report'][i]===tab));
+  ['tracker','decks','report'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');
+  if(tab==='report')renderReport();
+  if(tab==='decks')renderDecks();
+}
+function topAction(){if(curTab==='decks')openAddDk();else openAdd();}
+
+// ── SINGLE CABIN EDIT ─────────────────────────────────────────────────
+function openEdit(idx){
+  editIdx=idx;const c=cabins[idx];
+  document.getElementById('etit').textContent='Cabin '+c.cabin;
+  document.getElementById('edkl').textContent=c.deck;
+  document.getElementById('ptg').className='tg'+(c.done?' on':'');
+  document.getElementById('pdt').value=c.date||'';
+  document.getElementById('ecab').value=c.cabin;
+  document.getElementById('edk').value=c.deck;
+  document.getElementById('enotes').value=c.notes||'';
+  openM('emod');
+}
+function togProg(){
+  const t=document.getElementById('ptg'),w=t.classList.contains('on');
+  t.classList.toggle('on',!w);
+  if(!w&&!document.getElementById('pdt').value)document.getElementById('pdt').value=new Date().toISOString().split('T')[0];
+  if(w)document.getElementById('pdt').value='';
+}
+function saveEdit(){
+  const c=cabins[editIdx];
+  c.done=document.getElementById('ptg').classList.contains('on');
+  c.date=document.getElementById('pdt').value;
+  c.notes=document.getElementById('enotes').value;
+  persist();refresh();closeM('emod');toast('Saved');
+}
+
+// ── ADD CABIN ─────────────────────────────────────────────────────────
+function parseCabinInput(raw){
+  const nums=[];
+  const parts=raw.split(';').map(s=>s.trim()).filter(Boolean);
+  for(const part of parts){
+    if(part.includes('-')){
+      const[a,b]=part.split('-').map(s=>s.trim());
+      const na=parseInt(a),nb=parseInt(b);
+      if(isNaN(na)||isNaN(nb)||na>nb||nb-na>2000)return null;
+      for(let i=na;i<=nb;i++)nums.push(String(i));
+    }else{if(!part)return null;nums.push(part);}
+  }
+  return nums.length?nums:null;
+}
+function previewAdd(){
+  const raw=document.getElementById('anum').value.trim();
+  const el=document.getElementById('add-preview');
+  if(!raw){el.textContent='';return;}
+  const nums=parseCabinInput(raw);
+  if(!nums){el.innerHTML='<span style="color:var(--red)">Invalid format</span>';return;}
+  el.textContent=nums.length===1?'1 cabin to add':`${nums.length} cabins: ${nums.slice(0,5).join(', ')}${nums.length>5?'...':''}`;
+}
+function openAdd(){
+  document.getElementById('anum').value='';
+  document.getElementById('add-preview').textContent='';
+  if(decks.length)document.getElementById('adk').value=decks[0].name;
+  openM('amod');setTimeout(()=>document.getElementById('anum').focus(),350);
+}
+function saveAdd(){
+  const raw=document.getElementById('anum').value.trim(),dk=document.getElementById('adk').value;
+  if(!raw){toast('Enter a cabin number');return;}
+  if(!dk){toast('Select a deck');return;}
+  const nums=parseCabinInput(raw);
+  if(!nums){toast('Invalid format');return;}
+  // Get deck's allowed range
+  const deckObj=decks.find(d=>d.name===dk);
+  const allowedRange=deckObj?deckObj.allowedRange:null;
+  // Validate all cabins first
+  if(allowedRange){
+    const outOfRange=nums.filter(n=>!cabinInRange(n,allowedRange));
+    if(outOfRange.length>0){
+      toast(`Out of range: ${outOfRange.slice(0,3).join(', ')}${outOfRange.length>3?'...':''} — allowed: ${allowedRange.min}–${allowedRange.max}`);
+      return;
+    }
+  }
+  let added=0,skipped=0;
+  nums.forEach(cab=>{
+    if(cabins.some(c=>c.cabin.toLowerCase()===cab.toLowerCase()&&c.deck===dk)){skipped++;return;}
+    cabins.push({id:cab+'_'+Date.now()+'_'+Math.random(),cabin:cab,deck:dk,done:false,date:'',notes:''});
+    added++;
+  });
+  sortAll();persist();refresh();closeM('amod');
+  toast(skipped>0?`${added} added, ${skipped} skipped`:`${added} cabin${added!==1?'s':''} added`);
+}
+
+// ── DECK MANAGEMENT ───────────────────────────────────────────────────
+function getDeckNumber(name){const m=name.match(/[0-9]+/);return m?parseInt(m[0]):null;}
+
+function parseAllowedRange(raw){
+  // Accepts: "10100-10500" -> {min:10100, max:10500}
+  const parts=raw.trim().split('-').map(s=>s.trim());
+  if(parts.length!==2)return null;
+  const mn=parseInt(parts[0]),mx=parseInt(parts[1]);
+  if(isNaN(mn)||isNaN(mx)||mn>mx)return null;
+  return {min:mn,max:mx};
+}
+
+function cabinInRange(cabinStr, allowedRange){
+  if(!allowedRange)return true; // no restriction
+  const n=parseInt(cabinStr);
+  if(isNaN(n))return false;
+  return n>=allowedRange.min&&n<=allowedRange.max;
+}
+function previewDeck(){
+  const name=document.getElementById('dkname').value.trim();
+  const rangeRaw=document.getElementById('dkcabrange').value.trim();
+  const allowRaw=document.getElementById('dkallowrange')?document.getElementById('dkallowrange').value.trim():'';
+  const el=document.getElementById('dk-preview');
+  if(!name){el.textContent='';return;}
+  if(editDkIdx!==null){el.textContent='Editing deck name only (cabin rules unchanged)';return;}
+  const dn=getDeckNumber(name);
+  let lines=[];
+  if(rangeRaw){
+    const nums=parseCabinInput(rangeRaw);
+    if(!nums){el.innerHTML='<span style="color:var(--red)">Invalid generate range</span>';return;}
+    const ex=nums.slice(0,3).map(n=>dn?String(dn*1000+parseInt(n)||n):n);
+    lines.push(`Generate: ${nums.length} cabins (${ex.join(', ')}${nums.length>3?'...':''})`);
+  }else if(dn){
+    lines.push(`Generate: 15 cabins auto (${dn}001 – ${dn}015)`);
+  }
+  if(allowRaw){
+    const parsed=parseAllowedRange(allowRaw);
+    if(!parsed){el.innerHTML='<span style="color:var(--red)">Invalid allowed range — use format: 10100-10500</span>';return;}
+    lines.push(`Allowed cabins: ${parsed.min} – ${parsed.max}`);
+  }else{
+    lines.push('<span style="color:var(--red)">⚠ No allowed range set — all cabin numbers will be accepted</span>');
+  }
+  el.innerHTML=lines.join('<br>');
+}
+function openAddDk(){
+  editDkIdx=null;
+  document.getElementById('dktit').textContent='Add Deck';
+  document.getElementById('dkname').value='';
+  document.getElementById('dkcabrange').value='';
+  document.getElementById('dk-preview').textContent='';
+  document.getElementById('dksubtxt').style.display='block';
+  document.getElementById('dkcab-fi').style.display='block';
+  openM('dkmod');setTimeout(()=>document.getElementById('dkname').focus(),350);
+}
+function openEditDk(idx){
+  editDkIdx=idx;
+  const dk=decks[idx];
+  document.getElementById('dktit').textContent='Edit Deck';
+  document.getElementById('dkname').value=dk.name;
+  document.getElementById('dkcabrange').value='';
+  const arEl=document.getElementById('dkallowrange');
+  if(arEl){arEl.value=dk.allowedRange?`${dk.allowedRange.min}-${dk.allowedRange.max}`:'';}
+  document.getElementById('dk-preview').textContent='';
+  document.getElementById('dksubtxt').style.display='none';
+  document.getElementById('dkcab-fi').style.display='none';
+  openM('dkmod');setTimeout(()=>document.getElementById('dkname').focus(),350);
+}
+function saveDeck(){
+  const name=document.getElementById('dkname').value.trim();
+  if(!name){toast('Enter a deck name');return;}
+  if(editDkIdx===null){
+    if(decks.some(d=>d.name.toLowerCase()===name.toLowerCase())){toast('Deck already exists');return;}
+    // Parse allowed range
+    const allowRaw=document.getElementById('dkallowrange').value.trim();
+    let allowedRange=null;
+    if(allowRaw){
+      allowedRange=parseAllowedRange(allowRaw);
+      if(!allowedRange){toast('Invalid allowed range — use format: 10100-10500');return;}
+    }
+    decks.push({id:'dk'+Date.now(),name,allowedRange});
+    const dn=getDeckNumber(name);
+    const rangeRaw=document.getElementById('dkcabrange').value.trim();
+    if(rangeRaw){
+      const nums=parseCabinInput(rangeRaw);
+      if(nums)nums.forEach(n=>{
+        const cab=dn?String(dn*1000+parseInt(n)||n):n;
+        if(!cabins.some(c=>c.cabin===cab&&c.deck===name))
+          cabins.push({id:cab+'_'+Date.now()+'_'+Math.random(),cabin:cab,deck:name,done:false,date:'',notes:''});
+      });
+    }else if(dn){
+      for(let c=1;c<=15;c++)cabins.push({id:String(dn*1000+c)+'_'+Date.now()+'_'+Math.random(),cabin:String(dn*1000+c),deck:name,done:false,date:'',notes:''});
+    }
+  }else{
+    const old=decks[editDkIdx].name;
+    if(decks.some((d,i)=>i!==editDkIdx&&d.name.toLowerCase()===name.toLowerCase())){toast('Deck name already exists');return;}
+    decks[editDkIdx].name=name;
+    // Update allowed range if provided
+    const allowRaw=document.getElementById('dkallowrange')?document.getElementById('dkallowrange').value.trim():'';
+    if(allowRaw){
+      const parsed=parseAllowedRange(allowRaw);
+      if(!parsed){toast('Invalid allowed range');return;}
+      decks[editDkIdx].allowedRange=parsed;
+    }
+    cabins.forEach(c=>{if(c.deck===old)c.deck=name;});
+  }
+  sortAll();persist();buildSelects();renderDecks();renderList();closeM('dkmod');
+  toast(editDkIdx===null?'Deck added':'Deck updated');
+}
+
+// ── SINGLE DELETE ─────────────────────────────────────────────────────
+function askDel(e,idx,type='cabin'){
+  e.stopPropagation();delTarget={idx,type};
+  if(type==='cabin'){
+    document.getElementById('cfmt').textContent='Delete cabin?';
+    document.getElementById('cfmm').textContent=`Cabin ${cabins[idx].cabin} (${cabins[idx].deck}) will be permanently removed.`;
+  }else{
+    const cnt=cabins.filter(c=>c.deck===decks[idx].name).length;
+    document.getElementById('cfmt').textContent='Delete deck?';
+    document.getElementById('cfmm').textContent=`"${decks[idx].name}" and its ${cnt} cabin${cnt!==1?'s':''} will be removed.`;
+  }
+  openM('cfm');
+}
+function doDel(){
+  if(!delTarget)return;
+  const{idx,type}=delTarget;
+  if(type==='cabin'){cabins.splice(idx,1);}
+  else{const name=decks[idx].name;cabins=cabins.filter(c=>c.deck!==name);decks.splice(idx,1);}
+  sortAll();persist();refresh();renderDecks();closeM('cfm');toast('Deleted');
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+function mkPanelList(items,selSet,onToggle){
+  if(!items.length)return '<div class="empty">No cabins found</div>';
+  return items.map(c=>`
+    <div class="bulk-row${selSet.has(c._i)?' selected':''}" onclick="${onToggle}(${c._i})">
+      <div class="bulk-check${selSet.has(c._i)?' on':''}">${selSet.has(c._i)?'&#10003;':''}</div>
+      <div><div class="bulk-num">Cabin ${c.cabin}</div>
+        <div class="bulk-dk">${c.deck}&nbsp;&middot;&nbsp;<span style="font-weight:500;color:${c.done?'var(--green-text)':'var(--amber-text)'}">${c.done?'Done':'Pending'}</span></div>
+      </div>
+    </div>`).join('');
+}
+function filterCabins(q,filterStatus){
+  return cabins.map((c,i)=>({...c,_i:i})).filter(c=>{
+    if(q&&!c.cabin.toLowerCase().includes(q)&&!c.deck.toLowerCase().includes(q))return false;
+    if(filterStatus==='done'&&!c.done)return false;
+    if(filterStatus==='pending'&&c.done)return false;
+    return true;
+  });
+}
+function applyPillFilter(prefix,filter,colors){
+  ['all','pending','done'].forEach(f=>{
+    const btn=document.getElementById(`${prefix}-f-${f}`);
+    if(!btn)return;
+    const active=filter===f;
+    const color=active?(f==='done'?colors.done:f==='pending'?colors.pending:colors.all):'var(--bg)';
+    btn.style.background=color;
+    btn.style.color=active?'#fff':'var(--text2)';
+  });
+}
+function applyRangeToSel(raw,infoId,selSet){
+  const info=document.getElementById(infoId);
+  if(!raw){info.textContent='';return;}
+  const nums=parseCabinInput(raw);
+  if(!nums){info.innerHTML='<span style="color:var(--red)">Invalid format</span>';return;}
+  const numSet=new Set(nums.map(n=>n.toLowerCase()));
+  let matched=0;
+  cabins.forEach((c,i)=>{if(numSet.has(c.cabin.toLowerCase())){selSet.add(i);matched++;}});
+  info.textContent=matched?`${matched} cabin${matched!==1?'s':''} selected`:'No matching cabins found';
+  info.style.color=matched?'var(--green-text)':'var(--text2)';
+}
+
+// ── BULK DELETE ───────────────────────────────────────────────────────
+function openBulkDelete(){
+  delSel=new Set();delFilter='all';
+  ['del-search','del-range'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('del-range-info').textContent='';
+  document.getElementById('del-overlay').classList.add('open');
+  document.getElementById('del-sheet').classList.add('open');
+  setDelFilter('all');renderDelList();updateDelCount();
+}
+function closeDel(){
+  document.getElementById('del-overlay').classList.remove('open');
+  document.getElementById('del-sheet').classList.remove('open');
+}
+function setDelFilter(f){
+  delFilter=f;
+  applyPillFilter('del',f,{all:'var(--blue)',pending:'var(--red)',done:'var(--green)'});
+  renderDelList();
+}
+function delRangeInput(){
+  applyRangeToSel(document.getElementById('del-range').value.trim(),'del-range-info',delSel);
+  renderDelList();updateDelCount();
+}
+function delToggleAll(){
+  const q=document.getElementById('del-search').value.toLowerCase();
+  const f=filterCabins(q,delFilter);
+  const all=f.length>0&&f.every(c=>delSel.has(c._i));
+  f.forEach(c=>all?delSel.delete(c._i):delSel.add(c._i));
+  renderDelList();updateDelCount();
+}
+function renderDelList(){
+  const q=document.getElementById('del-search').value.toLowerCase();
+  const f=filterCabins(q,delFilter);
+  const all=f.length>0&&f.every(c=>delSel.has(c._i));
+  document.getElementById('del-all-btn').textContent=all?'None':'All';
+  document.getElementById('del-list').innerHTML=mkPanelList(f,delSel,'delToggle');
+}
+function delToggle(idx){delSel.has(idx)?delSel.delete(idx):delSel.add(idx);renderDelList();updateDelCount();}
+function updateDelCount(){
+  const n=delSel.size;
+  document.getElementById('del-count').textContent=n===0?'0 selected':`${n} cabin${n!==1?'s':''} selected`;
+  const btn=document.getElementById('del-btn');
+  btn.disabled=n===0;btn.style.opacity=n>0?'1':'0.35';
+  btn.textContent=n>0?`Delete ${n} cabin${n!==1?'s':''}`:'Delete selected';
+}
+function delConfirm(){
+  if(!delSel.size)return;
+  document.getElementById('del-cfm-msg').textContent=
+    `You are about to permanently delete ${delSel.size} cabin${delSel.size!==1?'s':''} from the project. This cannot be undone.`;
+  openM('del-cfm');
+}
+function doDelBulk(){
+  const indices=Array.from(delSel).sort((a,b)=>b-a);
+  const n=indices.length;
+  indices.forEach(i=>cabins.splice(i,1));
+  delSel=new Set();
+  closeM('del-cfm');sortAll();persist();refresh();closeDel();
+  toast(`${n} cabin${n!==1?'s':''} deleted`);
+}
+
+// ── CABIN STATUS ──────────────────────────────────────────────────────
+function openBulkStatus(){
+  bstSel=new Set();bstFilter='all';bstPendingDone=null;
+  ['bst-search','bst-range'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('bst-range-info').textContent='';
+  document.getElementById('bst-overlay').classList.add('open');
+  document.getElementById('bst-sheet').classList.add('open');
+  setBstFilter('all');renderBstList();updateBstCount();
+}
+function closeBst(){
+  document.getElementById('bst-overlay').classList.remove('open');
+  document.getElementById('bst-sheet').classList.remove('open');
+}
+function setBstFilter(f){
+  bstFilter=f;
+  applyPillFilter('bst',f,{all:'var(--blue)',pending:'var(--red)',done:'var(--green)'});
+  renderBstList();
+}
+function bstRangeInput(){
+  applyRangeToSel(document.getElementById('bst-range').value.trim(),'bst-range-info',bstSel);
+  renderBstList();updateBstCount();
+}
+function bstToggleAll(){
+  const q=document.getElementById('bst-search').value.toLowerCase();
+  const f=filterCabins(q,bstFilter);
+  const all=f.length>0&&f.every(c=>bstSel.has(c._i));
+  f.forEach(c=>all?bstSel.delete(c._i):bstSel.add(c._i));
+  renderBstList();updateBstCount();
+}
+function renderBstList(){
+  const q=document.getElementById('bst-search').value.toLowerCase();
+  const f=filterCabins(q,bstFilter);
+  const all=f.length>0&&f.every(c=>bstSel.has(c._i));
+  document.getElementById('bst-all-btn').textContent=all?'None':'All';
+  document.getElementById('bst-list').innerHTML=mkPanelList(f,bstSel,'bstToggle');
+}
+function bstToggle(idx){bstSel.has(idx)?bstSel.delete(idx):bstSel.add(idx);renderBstList();updateBstCount();}
+function updateBstCount(){
+  const n=bstSel.size;
+  document.getElementById('bst-count').textContent=n===0?'0 selected':`${n} cabin${n!==1?'s':''} selected`;
+  ['bst-done-btn','bst-pend-btn'].forEach(id=>{const b=document.getElementById(id);b.disabled=n===0;b.style.opacity=n>0?'1':'0.35';});
+}
+function bstConfirm(done){
+  if(!bstSel.size)return;
+  bstPendingDone=done;
+  const n=bstSel.size;
+  document.getElementById('bst-cfm-title').textContent=done?'Mark as Done':'Mark as Pending';
+  document.getElementById('bst-cfm-msg').textContent=`You are about to mark ${n} cabin${n!==1?'s':''} as "${done?'Done':'Pending'}". Are you sure?`;
+  document.getElementById('bst-cfm-ok').style.background=done?'var(--green)':'var(--red)';
+  openM('bst-cfm');
+}
+function bstApply(){
+  if(bstPendingDone===null)return;
+  const done=bstPendingDone;
+  const today=new Date().toISOString().split('T')[0];
+  bstSel.forEach(i=>{cabins[i].done=done;if(done&&!cabins[i].date)cabins[i].date=today;if(!done)cabins[i].date='';});
+  const n=bstSel.size;
+  bstSel=new Set();bstPendingDone=null;
+  closeM('bst-cfm');persist();refresh();renderBstList();updateBstCount();
+  toast(`${n} cabin${n!==1?'s':''} marked as ${done?'Done':'Pending'}`);
+}
+
+// ── EDIT CABINS ───────────────────────────────────────────────────────
+function openBulkEdit(){
+  beditSel=new Set();beditPendingDeck=null;
+  const s=document.getElementById('bedit-search');if(s)s.value='';
+  buildSelects();
+  document.getElementById('bedit-overlay').classList.add('open');
+  document.getElementById('bedit-sheet').classList.add('open');
+  renderBeditList();
+}
+function closeBedit(){
+  document.getElementById('bedit-overlay').classList.remove('open');
+  document.getElementById('bedit-sheet').classList.remove('open');
+}
+function beditRangeInput(){
+  applyRangeToSel(document.getElementById('bedit-range').value.trim(),'bedit-range-info',beditSel);
+  renderBeditList();updateBeditCount();
+}
+function beditToggleAll(){
+  const q=document.getElementById('bedit-search').value.toLowerCase();
+  const f=filterCabins(q,'all');
+  const all=f.length>0&&f.every(c=>beditSel.has(c._i));
+  f.forEach(c=>all?beditSel.delete(c._i):beditSel.add(c._i));
+  renderBeditList();updateBeditCount();
+}
+let beditSingleIdx=null;
+
+function renderBeditList(){
+  const q=document.getElementById('bedit-search').value.toLowerCase();
+  const f=filterCabins(q,'all');
+  const el=document.getElementById('bedit-list');
+  if(!f.length){el.innerHTML='<div class="empty">No cabins found</div>';return;}
+  el.innerHTML=f.map(c=>`
+    <div class="bulk-row" onclick="beditOpenSingle(${c._i})" style="justify-content:space-between">
+      <div>
+        <div class="bulk-num">Cabin ${c.cabin}</div>
+        <div class="bulk-dk">${c.deck}&nbsp;&middot;&nbsp;<span style="font-weight:500;color:${c.done?'var(--green-text)':'var(--amber-text)'}">${c.done?'Done':'Pending'}</span></div>
+      </div>
+      <span style="color:var(--blue);font-size:13px;font-weight:500">Edit &rsaquo;</span>
+    </div>`).join('');
+}
+
+function beditToggle(idx){renderBeditList();}
+function updateBeditCount(){}
+
+function beditRangeInput(){renderBeditList();}
+function beditToggleAll(){renderBeditList();}
+
+function beditOpenSingle(idx){
+  beditSingleIdx=idx;
+  const c=cabins[idx];
+  document.getElementById('bedit-single-title').textContent='Cabin '+c.cabin;
+  document.getElementById('bedit-single-deck').textContent=c.deck;
+  document.getElementById('bedit-single-cabin').value=c.cabin;
+  const sel=document.getElementById('bedit-single-deck-sel');
+  sel.innerHTML=decks.map(d=>`<option value="${d.name}"${d.name===c.deck?' selected':''}>${d.name}</option>`).join('');
+  document.getElementById('bedit-single-notes').value=c.notes||'';
+  openM('bedit-single-modal');
+}
+
+function beditSingleSave(){
+  const newCabin=document.getElementById('bedit-single-cabin').value.trim();
+  const newDeck=document.getElementById('bedit-single-deck-sel').value;
+  const newNotes=document.getElementById('bedit-single-notes').value;
+  if(!newCabin){toast('Cabin number cannot be empty');return;}
+  // Validate against deck's allowed range
+  const deckObj=decks.find(d=>d.name===newDeck);
+  if(deckObj&&deckObj.allowedRange&&!cabinInRange(newCabin,deckObj.allowedRange)){
+    toast(`Cabin ${newCabin} is outside allowed range ${deckObj.allowedRange.min}–${deckObj.allowedRange.max} for ${newDeck}`);
+    return;
+  }
+  if(cabins.some((c,i)=>i!==beditSingleIdx&&c.cabin.toLowerCase()===newCabin.toLowerCase()&&c.deck===newDeck)){
+    toast('Cabin '+newCabin+' already exists in '+newDeck);return;
+  }
+  cabins[beditSingleIdx].cabin=newCabin;
+  cabins[beditSingleIdx].deck=newDeck;
+  cabins[beditSingleIdx].notes=newNotes;
+  closeM('bedit-single-modal');
+  sortAll();persist();refresh();renderBeditList();
+  toast('Cabin updated');
+}
+
+function beditConfirm(){}
+function beditApply(){}
+
+// ── REPORT ────────────────────────────────────────────────────────────
+function renderReport(){
+  const tot=cabins.length,done=cabins.filter(c=>c.done).length,pend=tot-done;
+  const pr=tot?done/tot*100:0;
+  const pct=pr===0?0:pr<0.1?pr.toFixed(3):pr<1?pr.toFixed(2):pr<10?pr.toFixed(1):Math.round(pr);
+  const ds={};cabins.forEach(c=>{if(!ds[c.deck])ds[c.deck]={total:0,done:0};ds[c.deck].total++;if(c.done)ds[c.deck].done++;});
+  const sDecks=decks.map(d=>d.name).filter(n=>ds[n]);
+  const drows=sDecks.map(d=>{const s=ds[d],dp=s.total?Math.round(s.done/s.total*100):0;
+    return `<div class="dr"><span class="dn">${d}</span><span class="dc">${s.done}/${s.total}</span><div class="mb"><div class="mf" style="width:${dp}%"></div></div></div>`;}).join('');
+  document.getElementById('rbody').innerHTML=`<div class="rp">
+    <p class="st">Overall progress</p>
+    <div class="pc"><div class="ph"><span>${done} of ${tot} locks done</span><span style="color:var(--green-text);font-weight:600">${pct}%</span></div>
+      <div class="pb"><div class="pf" style="width:${pr}%"></div></div></div>
+    <p class="st">By deck</p>
+    <div class="dl">${drows||'<div style="padding:1rem;color:var(--text2);font-size:13px">No data yet</div>'}</div>
+    <button class="eb" id="expbtn" onclick="doExport()">&#8595;&nbsp; Export to Excel</button>
+    <p class="st">Client email</p>
+    <div class="ec">
+      <div class="eh"><span>Ready to copy</span><button class="cpb" onclick="copyEmail()">Copy</button></div>
+      <div class="ebody" id="etxt">${buildEmail(tot,done,pend,pct)}</div>
+    </div></div>`;
+}
+function buildEmail(tot,done,pend,pct){
+  const rem=100-pct;let s='';
+  if(pct>=100)s=`\u2705 The project has been completed in full. All ${tot} locks have been successfully replaced and programmed.`;
+  else if(pct>=75)s=`The project is in its final stage. With ${rem}% remaining (${pend} locks), we are on track to complete the installation as scheduled.`;
+  else if(pct>=50)s=`The project has passed the halfway mark. Our team continues to work efficiently across all decks to maintain the planned schedule.`;
+  else s=`Work on the lock replacement programme is progressing as planned.`;
+  return `Dear [Client Name],\n\nPlease find below the daily progress update for the lock replacement project at your property.\n\n\u2014\u2014\u2014 PROJECT STATUS UPDATE \u2014\u2014\u2014\n\nAs of today, we have successfully completed ${done} out of ${tot} lock replacements, representing ${pct}% of the total project scope.\n\n  \u2022 Locks completed and programmed : ${done}\n  \u2022 Locks pending                  : ${pend}\n\n${s}\n\nShould you have any questions or require additional information, please do not hesitate to contact us.\n\nKind regards,\n[Your Name]\nAssa Abloy \u2014 Project Team`;
+}
+function copyEmail(){
+  const txt=document.getElementById('etxt').innerText;
+  navigator.clipboard.writeText(txt).then(()=>{const b=document.querySelector('.cpb');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',2000);}).catch(()=>toast('Long-press to copy'));
+}
+
+// ── EXCEL EXPORT ──────────────────────────────────────────────────────
+async function doExport(){
+  const btn=document.getElementById('expbtn');
+  btn.disabled=true;btn.textContent='Building Excel...';
+  try{
+    if(typeof ExcelJS==='undefined')throw new Error('ExcelJS not loaded');
+    const wb=new ExcelJS.Workbook();
+    const DARK='1F3864',MID='2E75B6',LBLUE='BDD7EE',LGREEN='E2EFDA',LRED='FFCCCC',LGRAY='F2F2F2',WHITE='FFFFFF',YELLOW='FFF9C4';
+    const mkB=()=>({top:{style:'thin'},bottom:{style:'thin'},left:{style:'thin'},right:{style:'thin'}});
+    const mkF=c=>({type:'pattern',pattern:'solid',fgColor:{argb:'FF'+c}});
+    const mkFnt=(o={})=>({name:'Arial',size:o.sz||10,bold:o.bold||false,color:{argb:'FF'+(o.color||'000000')},italic:o.italic||false});
+    const ws=wb.addWorksheet('Lock Tracker');
+    const n=cabins.length;
+    ws.columns=[{key:'a',width:5},{key:'b',width:16},{key:'c',width:14},{key:'d',width:14},{key:'e',width:15},{key:'f',width:13},{key:'g',width:26}];
+    ws.mergeCells('A1:G1');
+    const r1=ws.getCell('A1');r1.value='ASSA ABLOY \u2014 Lock Replacement Project Tracker';
+    r1.font=mkFnt({bold:true,sz:14,color:WHITE});r1.fill=mkF(DARK);r1.alignment={horizontal:'center',vertical:'middle'};ws.getRow(1).height=32;
+    ws.mergeCells('A2:G2');
+    const r2=ws.getCell('A2');r2.value={formula:'TODAY()',result:new Date()};r2.numFmt='"Report date: "DD/MM/YYYY';
+    r2.font=mkFnt({sz:10,color:'555555',italic:true});r2.fill=mkF(LBLUE);r2.alignment={horizontal:'right',vertical:'middle'};ws.getRow(2).height=18;
+    const hdrs=['#','Cabin Number','Deck','Programmed','Date Programmed','Status','Notes'];
+    const r3=ws.getRow(3);r3.height=36;
+    hdrs.forEach((h,i)=>{const c=r3.getCell(i+1);c.value=h;c.font=mkFnt({bold:true,sz:11,color:WHITE});c.fill=mkF(i===0?DARK:MID);c.border=mkB();c.alignment={horizontal:'center',vertical:'middle',wrapText:true};});
+    const lastRow=3+n;
+    // Add Yes/No dropdown validation for Programmed column (D)
+    ws.dataValidations.add(`D4:D${lastRow}`,{
+      type:'list', allowBlank:true, formulae:['"Yes,No"'],
+      showErrorMessage:true, errorStyle:'stop',
+      errorTitle:'Invalid value', error:'Please select Yes or No'
+    });
+    cabins.forEach((cab,i)=>{
+      const rn=i+4,bg=i%2===0?LGRAY:WHITE;const row=ws.getRow(rn);row.height=18;
+      // Col A: index, B: cabin, C: deck, D: Programmed (Yes/No), E: Date, F: Status formula, G: Notes
+      const vals=[i+1,cab.cabin,cab.deck,cab.done?'Yes':'',cab.date||'',null,cab.notes||''];
+      vals.forEach((v,ci)=>{
+        const cell=row.getCell(ci+1);
+        cell.border=mkB();cell.font=mkFnt();
+        cell.alignment={horizontal:ci===6?'left':'center',vertical:'middle'};
+        if(ci===5){
+          // Status: formula based on Programmed column
+          cell.value={formula:`IF(D${rn}="Yes","✅ Done","⬜ Pending")`,result:cab.done?'✅ Done':'⬜ Pending'};
+          cell.fill=mkF(cab.done?LGREEN:bg);
+        } else {
+          cell.value=v;
+          cell.fill=mkF(bg);
+          if(ci===4&&v)cell.numFmt='DD/MM/YYYY';
+        }
+      });
+    });
+    // Conditional formatting: green for Done status
+    ws.addConditionalFormatting({
+      ref:`F4:F${lastRow}`,
+      rules:[{type:'containsText',operator:'containsText',text:'Done',style:{fill:{type:'pattern',pattern:'solid',bgColor:{argb:'FFE2EFDA'}}}}]
+    });
+    ws.views=[{state:'frozen',xSplit:0,ySplit:3,activeCell:'A4'}];
+    const rpt=wb.addWorksheet('Daily Report');
+    rpt.columns=[{width:34},{width:18},{width:18}];
+    const done=cabins.filter(c=>c.done).length,pend=n-done,pct=n?Math.round(done/n*100):0;
+    const ds={};cabins.forEach(c=>{if(!ds[c.deck])ds[c.deck]={total:0,done:0};ds[c.deck].total++;if(c.done)ds[c.deck].done++;});
+    const sDecks=decks.map(d=>d.name).filter(nm=>ds[nm]);
+    rpt.mergeCells('A1:C1');const rt1=rpt.getCell('A1');rt1.value='ASSA ABLOY \u2014 Daily Progress Report';rt1.font=mkFnt({bold:true,sz:14,color:WHITE});rt1.fill=mkF(DARK);rt1.alignment={horizontal:'center',vertical:'middle'};rpt.getRow(1).height=32;
+    rpt.mergeCells('A2:C2');const rt2=rpt.getCell('A2');rt2.value={formula:'TODAY()',result:new Date()};rt2.numFmt='"Report date: "DD/MM/YYYY';rt2.font=mkFnt({sz:10,color:'555555',italic:true});rt2.fill=mkF(LBLUE);rt2.alignment={horizontal:'right',vertical:'middle'};rpt.getRow(2).height=18;
+    const addRH=(r,v,bg)=>{rpt.mergeCells(`A${r}:C${r}`);const c=rpt.getCell(`A${r}`);c.value=v;c.font=mkFnt({bold:true,sz:11,color:WHITE});c.fill=mkF(bg||DARK);c.border=mkB();c.alignment={horizontal:'center',vertical:'middle'};rpt.getRow(r).height=24;};
+    const addRR=(r,lbl,val,nf,bg,bold)=>{const lc=rpt.getCell(`A${r}`);lc.value=lbl;lc.font=mkFnt({bold:true,sz:10,color:DARK});lc.fill=mkF(LBLUE);lc.border=mkB();lc.alignment={horizontal:'left',vertical:'middle'};rpt.mergeCells(`B${r}:C${r}`);const vc=rpt.getCell(`B${r}`);vc.value=val;vc.font=mkFnt({bold:!!bold,sz:10});vc.fill=mkF(bg||WHITE);vc.border=mkB();vc.alignment={horizontal:'center',vertical:'middle'};if(nf)vc.numFmt=nf;rpt.getRow(r).height=22;};
+    addRH(4,'OVERALL PROGRESS');
+    // Use formulas so Daily Report updates when Programmed column changes in Lock Tracker
+    addRR(5,'Total Locks in Project',{formula:`COUNTA('Lock Tracker'!B4:B${lastRow})`,result:n},'0',WHITE);
+    addRR(6,'Completed (Programmed)',{formula:`COUNTIF('Lock Tracker'!D4:D${lastRow},"Yes")`,result:done},'0',LGREEN);
+    addRR(7,'Pending',{formula:`COUNTA('Lock Tracker'!B4:B${lastRow})-COUNTIF('Lock Tracker'!D4:D${lastRow},"Yes")`,result:pend},'0',YELLOW);
+    addRR(8,'% Completion',{formula:`IFERROR(COUNTIF('Lock Tracker'!D4:D${lastRow},"Yes")/COUNTA('Lock Tracker'!B4:B${lastRow}),0)`,result:pct/100},'0.0%',LGREEN,true);
+    addRR(9,'% Remaining',{formula:`IFERROR(1-COUNTIF('Lock Tracker'!D4:D${lastRow},"Yes")/COUNTA('Lock Tracker'!B4:B${lastRow}),1)`,result:(100-pct)/100},'0.0%',LRED,true);
+    addRH(11,'PROGRESS BY DECK');
+    ['Deck','Total','Done \u2705'].forEach((h,i)=>{const c=rpt.getCell(12,i+1);c.value=h;c.font=mkFnt({bold:true,sz:11,color:WHITE});c.fill=mkF(MID);c.border=mkB();c.alignment={horizontal:'center',vertical:'middle'};});rpt.getRow(12).height=22;
+    sDecks.forEach((dk,i)=>{const rn=13+i,bg=i%2===0?WHITE:LGRAY,s=ds[dk]||{total:0,done:0};
+      const dkEsc=dk.replace(/'/g,"\'");
+      [[dk,LGRAY,dk],
+       [{formula:`COUNTIF('Lock Tracker'!C4:C${lastRow},"${dk}")`,result:s.total},WHITE,s.total],
+       [{formula:`COUNTIFS('Lock Tracker'!C4:C${lastRow},"${dk}",'Lock Tracker'!D4:D${lastRow},"Yes")`,result:s.done},LGREEN,s.done]
+      ].forEach(([v,cbg],ci)=>{const cell=rpt.getCell(rn,ci+1);cell.value=v;cell.font=mkFnt({bold:ci===0});cell.fill=mkF(ci===0?bg:cbg);cell.border=mkB();cell.alignment={horizontal:ci===0?'left':'center',vertical:'middle'};});rpt.getRow(rn).height=20;
+    });
+    const er=13+sDecks.length+2;addRH(er,'CLIENT EMAIL \u2014 DAILY UPDATE');
+    // Email as formula — auto-updates when Programmed column changes
+    // B5=Total, B6=Done, B7=Pending, B8=% Completion, B9=% Remaining
+    const emailFormula=(
+      '"Dear [Client Name],"'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"Please find below the daily progress update for the lock replacement project at your property."'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"\u2014\u2014\u2014 PROJECT STATUS UPDATE \u2014\u2014\u2014"'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"As of today, we have successfully completed "&B6&" out of "&B5&" lock replacements, representing "&TEXT(B8,\"0.0%\")&" of the total project scope."'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"  \u2022 Locks completed and programmed : "&B6'
+      +'&CHAR(10)'
+      +'&"  \u2022 Locks pending                  : "&B7'
+      +'&CHAR(10)&CHAR(10)'
+      +'&IF(B8>=1,"\u2705 The project has been completed in full. All "&B5&" locks have been successfully replaced and programmed.",'
+      +'IF(B8>=0.75,"The project is in its final stage. With "&TEXT(B9,\"0.0%\")&" remaining ("&B7&" locks), we are on track to complete the installation as scheduled.",'
+      +'IF(B8>=0.5,"The project has passed the halfway mark. Our team continues to work efficiently across all decks to maintain the planned schedule.",'
+      +'"Work on the lock replacement programme is progressing as planned.")))'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"Should you have any questions or require additional information, please do not hesitate to contact us."'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"Kind regards,"'
+      +'&CHAR(10)&"[Your Name]"'
+      +'&CHAR(10)&"Assa Abloy \u2014 Project Team"'
+    );
+    // Calculate current email text for result preview
+    let stxt='';
+    if(pct>=100)stxt='\u2705 The project has been completed in full. All '+n+' locks have been successfully replaced and programmed.';
+    else if(pct>=75)stxt='The project is in its final stage. With '+(100-pct)+'% remaining ('+pend+' locks), we are on track to complete the installation as scheduled.';
+    else if(pct>=50)stxt='The project has passed the halfway mark. Our team continues to work efficiently across all decks to maintain the planned schedule.';
+    else stxt='Work on the lock replacement programme is progressing as planned.';
+    const etxtResult='Dear [Client Name],\n\nPlease find below the daily progress update for the lock replacement project at your property.\n\n\u2014\u2014\u2014 PROJECT STATUS UPDATE \u2014\u2014\u2014\n\nAs of today, we have successfully completed '+done+' out of '+n+' lock replacements, representing '+(pct)+'% of the total project scope.\n\n  \u2022 Locks completed and programmed : '+done+'\n  \u2022 Locks pending                  : '+pend+'\n\n'+stxt+'\n\nShould you have any questions or require additional information, please do not hesitate to contact us.\n\nKind regards,\n[Your Name]\nAssa Abloy \u2014 Project Team';
+    const erow=er+1;rpt.mergeCells(`A${erow}:C${erow+20}`);
+    const ec=rpt.getCell(`A${erow}`);
+    ec.value={formula:emailFormula, result:etxtResult};
+    ec.font=mkFnt({sz:10});ec.fill=mkF('F0F4FF');ec.border=mkB();ec.alignment={horizontal:'left',vertical:'top',wrapText:true};
+    for(let r=erow;r<=erow+20;r++)rpt.getRow(r).height=18;
+    const tipRow=erow+21;rpt.mergeCells(`A${tipRow}:C${tipRow}`);
+    const tip=rpt.getCell(`A${tipRow}`);
+    tip.value='💡 Replace [Client Name] and [Your Name] before sending. Add the date when pasting into your email.';
+    tip.font=mkFnt({sz:9,color:'777777',italic:true});tip.fill=mkF('FAFAFA');
+    tip.alignment={horizontal:'left',vertical:'middle'};rpt.getRow(tipRow).height=16;
+    rpt.views=[{state:'frozen',xSplit:0,ySplit:2,activeCell:'A3'}];
+    const buf=await wb.xlsx.writeBuffer();
+    const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const today=new Date().toLocaleDateString('en-GB').replace(/\//g,'-');
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`LockTracker_${today}.xlsx`;a.click();
+    toast('Excel exported!');
+  }catch(err){toast('Error: '+err.message);console.error(err);}
+  btn.disabled=false;btn.innerHTML='&#8595;&nbsp; Export to Excel';
+}
+
+// ── MODAL HELPERS ─────────────────────────────────────────────────────
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function oc(e,id){if(e.target===document.getElementById(id))closeM(id);}
+init();
+</script>
+</body>
+</html>
