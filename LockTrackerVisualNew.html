@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lock Tracker">
+<title>Lock Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F5F6FA;
+  --surface:#FFFFFF;
+  --surface2:#F0F2F8;
+  --border:#E2E6F0;
+  --text:#1A1F36;
+  --text2:#6B7280;
+  --text3:#9CA3AF;
+  --navy:#0D1B2A;
+  --blue:#3B5BDB;
+  --blue-soft:#EEF2FF;
+  --green:#0CAF60;
+  --green-soft:#E6F9F0;
+  --green-text:#087A43;
+  --red:#F04438;
+  --red-soft:#FEF3F2;
+  --red-text:#B42318;
+  --amber:#F79009;
+  --amber-soft:#FFFAEB;
+  --amber-text:#B54708;
+  --orange:#E8612A;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 4px 16px rgba(0,0,0,.10);
+}
+html,body{height:100%;background:var(--bg);font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Inter',sans-serif;color:var(--text);overflow:hidden}
+/* ── LAYOUT ── */
+.app{display:flex;height:100%;height:100dvh}
+/* SIDEBAR */
+.sidebar{width:240px;background:#0A1628;display:flex;flex-direction:column;flex-shrink:0;padding-top:env(safe-area-inset-top)}
+.sb-logo{padding:1.4rem 1.25rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.sb-logo-top{display:flex;align-items:center;gap:11px;margin-bottom:.4rem}
+.sb-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#E8612A,#C94E1E);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 10px rgba(232,97,42,.3)}
+.sb-logo-text{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.2px;line-height:1}
+.sb-logo-brand{font-size:10px;color:rgba(255,255,255,.32);font-weight:500;letter-spacing:.3px}
+.sb-section{padding:.8rem 1.25rem .3rem;font-size:10px;font-weight:700;color:rgba(255,255,255,.22);letter-spacing:1.2px;text-transform:uppercase}
+.sb-nav{display:flex;flex-direction:column;gap:1px;padding:0 .75rem}
+.sb-item{display:flex;align-items:center;gap:10px;padding:.6rem .75rem;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.42);font-size:13px;font-weight:500;transition:all .15s;border:none;background:none;text-align:left;width:100%;line-height:1}
+.sb-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.75)}
+.sb-item.active{background:rgba(255,255,255,.08);color:#fff;font-weight:600}
+.sb-item.active .sb-icon-wrap{background:rgba(232,97,42,.18);color:#F07040}
+.sb-icon-wrap{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:rgba(255,255,255,.04);color:rgba(255,255,255,.4)}
+.sb-divider{height:1px;background:rgba(255,255,255,.06);margin:.5rem .75rem}
+.sb-bottom{margin-top:auto;padding:1rem 1.25rem;padding-bottom:max(1rem,env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.06)}
+.sb-proj-label{font-size:10px;color:rgba(255,255,255,.22);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.sb-proj-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.55)}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.25rem;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;padding-top:max(.75rem,env(safe-area-inset-top));gap:12px}
+.topbar-left{display:flex;flex-direction:column;min-width:0}
+.topbar-title{font-size:17px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.3px;font-family:'Inter',sans-serif}
+.topbar-sub{font-size:11px;color:var(--text2);margin-top:2px;font-weight:500;letter-spacing:.1px}
+.topbar-actions{display:flex;gap:6px;flex-shrink:0}
+.btn{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn:active{opacity:.8}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{background:var(--surface2)}
+.btn-danger{background:var(--red-soft);color:var(--red-text);border:1px solid rgba(240,68,56,.15)}
+.btn-icon{width:32px;height:32px;padding:0;justify-content:center;font-size:16px}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1.25rem;padding-bottom:max(1.25rem,env(safe-area-inset-bottom))}
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.25rem}
+.kpi-card{background:var(--surface);border-radius:var(--radius);padding:1rem 1.1rem;border:1px solid var(--border);box-shadow:var(--shadow)}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.5rem}
+.kpi-label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;font-family:'Inter',sans-serif}
+.kpi-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.kpi-val{font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:4px;letter-spacing:-.5px;font-family:'Inter',sans-serif}
+.kpi-sub{font-size:11px;color:var(--text2);font-weight:500}
+.kpi-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px}
+.kpi-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+/* ── SEARCH / FILTERS ── */
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;flex:1;min-width:160px}
+.search-box input{border:none;background:none;font-size:13px;color:var(--text);outline:none;width:100%}
+.search-box input::placeholder{color:var(--text3)}
+.filter-sel{font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);cursor:pointer;-webkit-appearance:none}
+/* ── CABIN LIST ── */
+.cabin-grid{display:flex;flex-direction:column;gap:6px}
+.cabin-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow)}
+.cabin-row:hover{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,91,219,.08)}
+.cabin-row:active{background:var(--surface2)}
+.cabin-row.done{border-left:3px solid var(--green)}
+.cabin-row.pending{border-left:3px solid var(--border)}
+.cabin-num{font-size:14px;font-weight:700;color:var(--text);flex:1;letter-spacing:-.1px;font-family:'Inter',sans-serif}
+.cabin-deck{font-size:11px;color:var(--text2);margin-top:2px;font-weight:500}
+.status-pill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;flex-shrink:0}
+.pill-done{background:var(--green-soft);color:var(--green-text)}
+.pill-pend{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.del-btn{width:26px;height:26px;border-radius:50%;background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.del-btn:hover{background:var(--red-soft);color:var(--red-text)}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text2)}
+.empty-icon{font-size:40px;margin-bottom:.75rem;opacity:.4}
+.empty-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:.35rem}
+.empty-sub{font-size:13px;color:var(--text2);line-height:1.5}
+/* ── DECK LIST ── */
+.deck-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.875rem 1rem;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.deck-dot{width:10px;height:10px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.deck-name{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.deck-range{font-size:11px;color:var(--text2);margin-top:2px}
+.deck-count{font-size:12px;color:var(--text2);margin-right:8px}
+.deck-actions{display:flex;gap:6px}
+/* ── REPORT ── */
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow)}
+.report-card-title{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif}
+.deck-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:.6rem}
+.deck-progress-row:last-child{margin-bottom:0}
+.dp-name{font-size:12px;font-weight:500;color:var(--text);width:80px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dp-bar-wrap{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.dp-bar{height:100%;border-radius:4px;background:var(--blue);transition:width .4s}
+.dp-pct{font-size:11px;font-weight:600;color:var(--text2);width:36px;text-align:right;flex-shrink:0}
+.email-box{background:var(--surface2);border-radius:var(--radius-sm);padding:1rem;font-size:12px;line-height:1.8;color:var(--text);white-space:pre-wrap;max-height:220px;overflow-y:auto;border:1px solid var(--border)}
+.copy-btn{font-size:12px;padding:5px 14px;border:1px solid var(--border);border-radius:20px;background:none;color:var(--text2);cursor:pointer}
+/* ── OVERLAYS / MODALS ── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s}
+.ov.open{opacity:1;pointer-events:all}
+.sh{background:var(--surface);border-radius:20px 20px 0 0;padding:1.25rem;padding-bottom:max(1.75rem,env(safe-area-inset-bottom));width:100%;max-width:520px;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.ov.open .sh{transform:translateY(0)}
+.hnd{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 1.25rem}
+.sh h2{font-size:18px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.ss{font-size:13px;color:var(--text2);margin-bottom:1.25rem}
+.fi{padding:.75rem 0;border-bottom:1px solid var(--border)}
+.fi:last-of-type{border-bottom:none;padding-bottom:0}
+.fi label{font-size:12px;color:var(--text2);display:block;margin-bottom:5px;font-weight:500}
+.fi input,.fi textarea,.fi select{font-size:15px;width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);outline:none;-webkit-appearance:none;transition:border .15s}
+.fi input:focus,.fi textarea:focus{border-color:var(--blue)}
+.fi textarea{height:72px;resize:none}
+.tr{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid var(--border)}
+.tl{font-size:15px;font-weight:500;color:var(--text)}
+.tg{width:48px;height:28px;border-radius:14px;background:var(--border);border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tg.on{background:var(--green)}
+.tg::after{content:'';position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.tg.on::after{left:23px}
+.sa{display:flex;gap:8px;margin-top:1.25rem}
+.bs{flex:1;padding:13px;font-size:15px;font-weight:600;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);cursor:pointer}
+.bc{padding:13px 18px;font-size:15px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);cursor:pointer}
+/* confirm */
+.co{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s}
+.co.open{opacity:1;pointer-events:all}
+.cb2{background:var(--surface);border-radius:var(--radius);padding:1.5rem;width:100%;max-width:300px;text-align:center}
+.cb2 h3{font-size:17px;font-weight:700;margin-bottom:.5rem;color:var(--text)}
+.cb2 p{font-size:14px;color:var(--text2);margin-bottom:1.25rem;line-height:1.5}
+.ca{display:flex;gap:8px}
+.bd{flex:1;padding:12px;font-size:15px;font-weight:600;background:var(--red);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer}
+.bk{flex:1;padding:12px;font-size:15px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);cursor:pointer}
+/* bulk panels */
+.bmod-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:250;opacity:0;pointer-events:none;transition:opacity .22s}
+.bmod-overlay.open{opacity:1;pointer-events:all}
+.bmod-sheet{position:fixed;inset:0;top:auto;background:var(--surface);border-radius:20px 20px 0 0;z-index:251;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.bmod-sheet.open{transform:translateY(0)}
+.bmod-header{padding:1rem 1rem .65rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.bmod-title{font-size:17px;font-weight:700;color:var(--text)}
+.bmod-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.bmod-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.bmod-footer{padding:1rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;padding-bottom:max(1rem,env(safe-area-inset-bottom));flex-shrink:0}
+.bulk-row{display:flex;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;gap:12px;background:var(--surface)}
+.bulk-row:active{background:var(--surface2)}
+.bulk-row.selected{background:var(--blue-soft)}
+.bulk-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent}
+.bulk-check.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.bulk-num{font-size:14px;font-weight:600;color:var(--text)}
+.bulk-dk{font-size:12px;color:var(--text2);margin-top:2px}
+.filter-pills{display:flex;gap:6px}
+.filter-pills button{flex:1;padding:6px;font-size:12px;font-weight:600;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer}
+.panel-search-area{padding:.65rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:7px;flex-shrink:0}
+.panel-search-row{display:flex;gap:6px;align-items:center}
+.panel-search-row input{flex:1;font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);outline:none}
+.panel-search-row button{padding:8px 12px;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--blue);cursor:pointer;white-space:nowrap}
+.panel-range-row input{width:100%;font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);outline:none}
+.panel-range-info{font-size:11px;color:var(--text2);min-height:13px}
+/* toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:rgba(26,31,54,.9);color:#fff;padding:10px 22px;border-radius:22px;font-size:13px;font-weight:500;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+/* mobile sidebar overlay */
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100}
+.sb-overlay.open{display:block}
+/* responsive */
+@media(max-width:680px){
+  .sidebar{position:fixed;left:-240px;top:0;bottom:0;z-index:101;transition:left .3s cubic-bezier(.32,.72,0,1);padding-top:env(safe-area-inset-top)}
+  .sidebar.open{left:0}
+  .main{width:100%}
+  .topbar{padding-left:.75rem}
+  .menu-btn{display:flex!important}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .report-grid{grid-template-columns:1fr}
+}
+.menu-btn{display:none;width:34px;height:34px;border-radius:var(--radius-sm);background:none;border:1px solid var(--border);cursor:pointer;align-items:center;justify-content:center;font-size:18px;color:var(--text2);flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- Mobile sidebar overlay -->
+<div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Logo -->
+    <div class="sb-logo">
+      <div class="sb-logo-top">
+        <div class="sb-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="2" width="16" height="20" rx="2.5" stroke="white" stroke-width="1.6" fill="rgba(255,255,255,0.08)"/>
+            <rect x="7.5" y="6" width="9" height="1.2" rx=".6" fill="white" opacity=".55"/>
+            <rect x="7.5" y="8.5" width="5" height="1" rx=".5" fill="white" opacity=".3"/>
+            <circle cx="12" cy="14" r="1.3" fill="white"/>
+            <path d="M9.5 14 Q12 11.2 14.5 14" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".7"/>
+            <path d="M8 15.5 Q12 10.5 16 15.5" stroke="white" stroke-width="1" stroke-linecap="round" fill="none" opacity=".35"/>
+            <circle cx="12" cy="19.5" r=".9" fill="#4ADE80"/>
+          </svg>
+        </div>
+        <div>
+          <div class="sb-logo-text">Lock Tracker</div>
+        </div>
+      </div>
+      <div class="sb-logo-brand">Assa Abloy · VingCard Pro</div>
+    </div>
+
+    <!-- Nav -->
+    <div class="sb-section">Menu</div>
+    <nav class="sb-nav">
+      <button class="sb-item active" id="nav-tracker" onclick="sw('tracker')">
+        <span class="sb-icon-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </span>
+        Tracker
+      </button>
+      <button class="sb-item" id="nav-decks" onclick="sw('decks')">
+        <span class="sb-icon-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <rect x="3" y="6" width="18" height="13" rx="2"/>
+            <path d="M3 10h18M8 6V4M16 6V4"/>
+          </svg>
+        </span>
+        Decks
+      </button>
+      <button class="sb-item" id="nav-report" onclick="sw('report')">
+        <span class="sb-icon-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 20V10M12 20V4M6 20v-6"/>
+          </svg>
+        </span>
+        Report
+      </button>
+    </nav>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">Tools</div>
+    <nav class="sb-nav">
+      <button class="sb-item" onclick="document.getElementById('xl-import').click()">
+        <span class="sb-icon-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </span>
+        Import Excel
+        <input type="file" id="xl-import" accept=".xlsx,.xls" style="display:none" onchange="importExcel(event)">
+      </button>
+      <button class="sb-item" onclick="sw('report');setTimeout(doExport,300)">
+        <span class="sb-icon-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </span>
+        Export Excel
+      </button>
+    </nav>
+
+    <div class="sb-bottom">
+      <div class="sb-proj-label">Project</div>
+      <div class="sb-proj-name" id="sb-proj-name">Default Project</div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+      <button class="menu-btn" id="menu-btn" onclick="openSidebar()">☰</button>
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbar-title">Lock Tracker</div>
+        <div class="topbar-sub" id="topbar-sub">Loading...</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-icon" onclick="openBulkStatus()" title="Change status" style="color:var(--green);border-color:var(--green);background:var(--green-soft)">✓</button>
+        <button class="btn btn-ghost btn-icon" onclick="openBulkEdit()" title="Edit cabins">✏</button>
+        <button class="btn btn-ghost btn-icon btn-danger" onclick="openBulkDelete()" title="Delete cabins">−</button>
+        <button class="btn btn-primary" onclick="topAction()">+ Add</button>
+      </div>
+    </div>
+
+    <!-- TAB: TRACKER -->
+    <div id="tab-tracker" class="content">
+      <!-- KPI cards -->
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-box">
+          <span style="color:var(--text3);font-size:14px">🔍</span>
+          <input type="search" id="search" placeholder="Search cabin or deck..." oninput="renderList()">
+        </div>
+        <select class="filter-sel" id="fdeck" onchange="renderList()"><option value="">All decks</option></select>
+        <select class="filter-sel" id="fst" onchange="renderList()">
+          <option value="">All status</option>
+          <option value="done">Done</option>
+          <option value="pending">Pending</option>
+        </select>
+      </div>
+      <!-- List -->
+      <div class="cabin-grid" id="clist"></div>
+    </div>
+
+    <!-- TAB: DECKS -->
+    <div id="tab-decks" class="content" style="display:none">
+      <div id="dlist"></div>
+    </div>
+
+    <!-- TAB: REPORT -->
+    <div id="tab-report" class="content" style="display:none">
+      <div id="rbody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SINGLE CABIN -->
+<div class="ov" id="emod"><div class="sh">
+  <div class="hnd"></div><h2 id="etit">Edit Cabin</h2><p class="ss" id="edkl"></p>
+  <div class="tr"><span class="tl">Programmed</span><button class="tg" id="ptg" onclick="togProg()"></button></div>
+  <div class="fi"><label>Date programmed</label><input type="date" id="pdt"></div>
+  <div class="fi" style="opacity:.5;pointer-events:none"><label>Cabin number <span style="font-size:10px;color:var(--text3)">(locked)</span></label><input type="text" id="ecab" readonly></div>
+  <div class="fi" style="opacity:.5;pointer-events:none"><label>Deck <span style="font-size:10px;color:var(--text3)">(locked)</span></label><select id="edk" disabled></select></div>
+  <div class="fi"><label>Notes</label><textarea id="enotes" placeholder="Optional..."></textarea></div>
+  <div class="sa"><button class="bc" onclick="closeM('emod')">Cancel</button><button class="bs" onclick="saveEdit()">Save</button></div>
+</div></div>
+
+<!-- ADD CABIN -->
+<div class="ov" id="amod"><div class="sh">
+  <div class="hnd"></div>
+  <h2 style="margin-bottom:.35rem">Add Cabins</h2>
+  <p style="font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.6">
+    Numbers: <b>101</b> &nbsp;·&nbsp; Range: <b>101-110</b> &nbsp;·&nbsp; List: <b>101;102</b><br>
+    Names/mixed: <b>"6-436 Carlshamn; elevator1"</b>
+  </p>
+  <div class="fi"><label>Cabin numbers</label><input type="text" id="anum" placeholder="e.g. 101-110 or &quot;Name1; Name2&quot;" oninput="previewAdd()"></div>
+  <div class="fi"><label>Deck</label><select id="adk"></select></div>
+  <div id="add-preview" style="font-size:12px;color:var(--text2);padding:.4rem 0;min-height:20px"></div>
+  <div class="sa"><button class="bc" onclick="closeM('amod')">Cancel</button><button class="bs" onclick="saveAdd()">Add</button></div>
+</div></div>
+
+<!-- DECK MODAL -->
+<div class="ov" id="dkmod"><div class="sh">
+  <div class="hnd"></div><h2 id="dktit" style="margin-bottom:.4rem">Add Deck</h2>
+  <p id="dksubtxt" style="font-size:12px;color:var(--text2);margin-bottom:1rem;line-height:1.5">Cabins auto-generated as DeckNumber + CabinNumber</p>
+  <div class="fi"><label>Deck name or number</label><input type="text" id="dkname" placeholder="e.g. 10 or Deck 10" oninput="previewDeck()"></div>
+  <div class="fi" id="dkcab-fi"><label>Cabin range to generate (optional)</label><input type="text" id="dkcabrange" placeholder="e.g. 001-015 or leave empty" oninput="previewDeck()"></div>
+  <div class="fi" id="dkallow-fi">
+    <label>Allowed cabin range <span style="color:var(--red);font-size:11px">*required</span></label>
+    <input type="text" id="dkallowrange" placeholder="e.g. 10100-10500" oninput="previewDeck()">
+    <div style="font-size:11px;color:var(--text2);margin-top:5px">Only cabins within this range will be accepted</div>
+  </div>
+  <div id="dk-preview" style="font-size:12px;color:var(--text2);padding:.4rem 0;min-height:18px;line-height:1.5"></div>
+  <div class="sa"><button class="bc" onclick="closeM('dkmod')">Cancel</button><button class="bs" onclick="saveDeck()">Save</button></div>
+</div></div>
+
+<!-- CONFIRM SINGLE DELETE -->
+<div class="co" id="cfm"><div class="cb2">
+  <h3 id="cfmt">Delete?</h3><p id="cfmm"></p>
+  <div class="ca"><button class="bk" onclick="closeM('cfm')">Keep</button><button class="bd" onclick="doDel()">Delete</button></div>
+</div></div>
+
+<!-- DELETE ALL CONFIRM -->
+<div class="co" id="del-all-cfm" style="z-index:400"><div class="cb2">
+  <h3>Delete everything?</h3>
+  <p style="margin-bottom:1.25rem;line-height:1.5;font-size:14px;color:var(--text2)">This will permanently delete <b>all cabins and all decks</b>. Cannot be undone.</p>
+  <div class="ca"><button class="bk" onclick="closeM('del-all-cfm')">Cancel</button><button class="bd" onclick="doDelAll()">Delete everything</button></div>
+</div></div>
+
+<!-- ══ BULK DELETE PANEL ══ -->
+<div class="bmod-overlay" id="del-overlay"></div>
+<div class="bmod-sheet" id="del-sheet">
+  <div class="bmod-header"><div class="hnd" style="margin-bottom:.5rem"></div>
+    <div class="bmod-title">Delete Cabins</div>
+    <div class="bmod-sub">Select cabins to permanently delete</div>
+  </div>
+  <div class="panel-search-area">
+    <div class="panel-search-row">
+      <input type="search" id="del-search" placeholder="Search cabin or deck..." oninput="renderDelList()">
+      <button onclick="delToggleAll()" id="del-all-btn">All</button>
+    </div>
+    <div class="filter-pills">
+      <button id="del-f-all" onclick="setDelFilter('all')">All</button>
+      <button id="del-f-pending" onclick="setDelFilter('pending')">✕ Pending</button>
+      <button id="del-f-done" onclick="setDelFilter('done')">✓ Done</button>
+    </div>
+    <div class="panel-range-row"><input type="text" id="del-range" placeholder="Quick select: 101-110 or 101;102;115" oninput="delRangeInput()"></div>
+    <div class="panel-range-info" id="del-range-info"></div>
+  </div>
+  <div class="bmod-list" id="del-list"></div>
+  <div class="bmod-footer">
+    <div style="display:flex;align-items:center;padding:0 2px"><span style="font-size:13px;color:var(--text2);flex:1" id="del-count">0 selected</span></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeDel()" style="flex:1;padding:14px;font-size:15px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);cursor:pointer">Cancel</button>
+      <button onclick="delConfirm()" id="del-btn" disabled style="flex:1;padding:14px;font-size:15px;font-weight:600;background:var(--red);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;opacity:.35;transition:opacity .15s">Delete selected</button>
+    </div>
+    <button onclick="delAllConfirm()" style="width:100%;padding:11px;font-size:13px;font-weight:600;background:none;border:1px solid var(--red);border-radius:var(--radius);color:var(--red-text);cursor:pointer">🗑 Delete ALL cabins &amp; decks</button>
+  </div>
+</div>
+<div class="co" id="del-cfm" style="z-index:400"><div class="cb2">
+  <h3>Delete cabins?</h3><p id="del-cfm-msg" style="margin-bottom:1.25rem;line-height:1.5;font-size:14px;color:var(--text2)"></p>
+  <div class="ca"><button class="bk" onclick="closeM('del-cfm')">Cancel</button><button class="bd" onclick="doDelBulk()">Delete</button></div>
+</div></div>
+
+<!-- ══ CABIN STATUS PANEL ══ -->
+<div class="bmod-overlay" id="bst-overlay"></div>
+<div class="bmod-sheet" id="bst-sheet">
+  <div class="bmod-header"><div class="hnd" style="margin-bottom:.5rem"></div>
+    <div class="bmod-title">Cabin Status</div>
+    <div class="bmod-sub">Select cabins to change their status</div>
+  </div>
+  <div class="panel-search-area">
+    <div class="panel-search-row">
+      <input type="search" id="bst-search" placeholder="Search cabin..." oninput="renderBstList()">
+      <button onclick="bstToggleAll()" id="bst-all-btn">All</button>
+    </div>
+    <select id="bst-deck-filter" onchange="renderBstList()"
+      style="width:100%;font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);outline:none;-webkit-appearance:none;cursor:pointer">
+      <option value="">All decks</option>
+    </select>
+    <div class="filter-pills">
+      <button id="bst-f-all" onclick="setBstFilter('all')">All</button>
+      <button id="bst-f-pending" onclick="setBstFilter('pending')">✕ Pending</button>
+      <button id="bst-f-done" onclick="setBstFilter('done')">✓ Done</button>
+    </div>
+    <div class="panel-range-row"><input type="text" id="bst-range" placeholder="Quick select: 101-110 or 101;102;115" oninput="bstRangeInput()"></div>
+    <div class="panel-range-info" id="bst-range-info"></div>
+  </div>
+  <div class="bmod-list" id="bst-list"></div>
+  <div class="bmod-footer">
+    <div style="display:flex;align-items:center;padding:0 2px"><span style="font-size:13px;color:var(--text2);flex:1" id="bst-count">0 selected</span><span style="font-size:12px;color:var(--text2)">New status:</span></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="bstConfirm(true)" id="bst-done-btn" disabled style="flex:1;padding:14px;font-size:15px;font-weight:600;background:var(--green);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;opacity:.35;transition:opacity .15s">✓ Done</button>
+      <button onclick="bstConfirm(false)" id="bst-pend-btn" disabled style="flex:1;padding:14px;font-size:15px;font-weight:600;background:var(--red);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;opacity:.35;transition:opacity .15s">✕ Pending</button>
+    </div>
+    <button onclick="closeBst()" style="width:100%;padding:12px;font-size:15px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);cursor:pointer">Cancel</button>
+  </div>
+</div>
+<div class="co" id="bst-cfm" style="z-index:400"><div class="cb2">
+  <h3 id="bst-cfm-title">Change Status</h3><p id="bst-cfm-msg" style="margin-bottom:1.25rem;line-height:1.5;font-size:14px;color:var(--text2)"></p>
+  <div class="ca"><button class="bk" onclick="closeM('bst-cfm')">Cancel</button><button id="bst-cfm-ok" style="flex:1;padding:12px;font-size:15px;font-weight:600;border:none;border-radius:var(--radius-sm);cursor:pointer;color:#fff" onclick="bstApply()">Confirm</button></div>
+</div></div>
+
+<!-- ══ EDIT CABINS PANEL ══ -->
+<div class="bmod-overlay" id="bedit-overlay"></div>
+<div class="bmod-sheet" id="bedit-sheet">
+  <div class="bmod-header"><div class="hnd" style="margin-bottom:.5rem"></div>
+    <div class="bmod-title">Edit Cabins</div>
+    <div class="bmod-sub">Tap a cabin to edit its details</div>
+  </div>
+  <div class="panel-search-area">
+    <div class="panel-search-row">
+      <input type="search" id="bedit-search" placeholder="Search cabin or deck..." oninput="renderBeditList()">
+    </div>
+  </div>
+  <div class="bmod-list" id="bedit-list"></div>
+  <div class="bmod-footer">
+    <p style="font-size:13px;color:var(--text2);text-align:center">Tap a cabin to edit its details</p>
+    <button onclick="closeBedit()" style="width:100%;padding:14px;font-size:15px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);cursor:pointer">Close</button>
+  </div>
+</div>
+<div class="ov" id="bedit-single-modal" style="z-index:400"><div class="sh">
+  <div class="hnd"></div>
+  <h2 id="bedit-single-title">Edit Cabin</h2>
+  <p class="ss" id="bedit-single-deck"></p>
+  <div class="fi"><label>Cabin number</label><input type="text" id="bedit-single-cabin"></div>
+  <div class="fi"><label>Deck</label><select id="bedit-single-deck-sel"></select></div>
+  <div class="fi"><label>Notes</label><textarea id="bedit-single-notes" placeholder="Optional..."></textarea></div>
+  <div class="fi" style="border-bottom:none;padding-bottom:0"><label>Are you sure you want to save these changes?</label></div>
+  <div class="sa"><button class="bc" onclick="closeM('bedit-single-modal')">Cancel</button><button class="bs" onclick="beditSingleSave()">Save changes</button></div>
+</div></div>
+<div class="co" id="bedit-cfm" style="z-index:400"><div class="cb2">
+  <h3>Edit Cabins</h3><p id="bedit-cfm-msg" style="margin-bottom:1.25rem;line-height:1.5;font-size:14px;color:var(--text2)"></p>
+  <div class="ca"><button class="bk" onclick="closeM('bedit-cfm')">Cancel</button><button class="bs" id="bedit-cfm-ok" onclick="beditApply()">Confirm</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ══════════════════════════════════════════════════════
+// PROJECT ID — change this for each new project!
+// Each unique ID = separate data storage
+// ══════════════════════════════════════════════════════
+const PROJECT_ID='MASSALIA - 81 Crew Cabin / 217 Pax Cabin';
+const KEY='locktracker_v3_'+PROJECT_ID;
+let cabins=[],decks=[],editIdx=null,delTarget=null,editDkIdx=null,curTab='tracker';
+
+// ── STATE for bulk panels (all separate) ─────────────────────────────
+let delSel=new Set(), delFilter='all';
+let bstSel=new Set(), bstFilter='all', bstPendingDone=null;
+let beditSel=new Set(), beditPendingDeck=null;
+
+// ── INIT ─────────────────────────────────────────────────────────────
+function init(){
+  try{
+    const r=localStorage.getItem(KEY);
+    if(r){const d=JSON.parse(r);cabins=d.cabins||[];decks=d.decks||[];}
+    else{buildDef();persist();}
+  }catch(e){buildDef();}
+
+  sortAll();refresh();
+  if(PROJECT_ID!=='DEFAULT_PROJECT'){
+    const t=document.getElementById('app-title');
+    if(t)t.textContent='Lock Tracker — '+PROJECT_ID;
+    document.title='Lock Tracker — '+PROJECT_ID;
+  }
+}
+
+function buildDef(){
+  // Start empty — user adds decks/cabins manually or via Excel import
+  decks=[];
+  cabins=[];
+}
+
+function persist(){try{localStorage.setItem(KEY,JSON.stringify({cabins,decks}));}catch(e){}}
+function refresh(){renderStats();renderList();buildSelects();}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// ── SORT ─────────────────────────────────────────────────────────────
+function sortAll(){
+  const dkOrder=Object.fromEntries(decks.map((d,i)=>[d.name,i]));
+  cabins.sort((a,b)=>{
+    const di=(dkOrder[a.deck]??99)-(dkOrder[b.deck]??99);
+    return di!==0?di:a.cabin.localeCompare(b.cabin,undefined,{numeric:true,sensitivity:'base'});
+  });
+  decks.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'}));
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────
+function renderStats(){
+  const tot=cabins.length,done=cabins.filter(c=>c.done).length;
+  const pr=tot?done/tot*100:0;
+  const pct=pr===0?0:pr<0.1?pr.toFixed(3):pr<1?pr.toFixed(2):pr<10?pr.toFixed(1):Math.round(pr);
+  document.getElementById('topsub').textContent=`${done} / ${tot}  ·  ${pct}%`;
+  document.getElementById('statsbar').innerHTML=
+    `<div class="si"><div class="sn">${tot}</div><div class="sl">Total</div></div>
+     <div class="si"><div class="sn g">${done}</div><div class="sl">Done</div></div>
+     <div class="si"><div class="sn" style="color:var(--danger)">${tot-done}</div><div class="sl">Pending</div></div>
+     <div class="si"><div class="sn g">${pct}<span style="font-size:14px;font-weight:600">%</span></div><div class="sl">Complete</div></div>`;
+}
+
+// ── SELECTS ───────────────────────────────────────────────────────────
+function buildSelects(){
+  const opts=decks.map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
+  ['adk','edk','bedit-deck'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  const sel=document.getElementById('fdeck'),cur=sel.value;
+  const used=new Set(cabins.map(c=>c.deck));
+  sel.innerHTML='<option value="">All decks</option>'+decks.filter(d=>used.has(d.name)).map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
+  if(cur)sel.value=cur;
+}
+
+// ── TRACKER LIST ──────────────────────────────────────────────────────
+function renderList(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const dk=document.getElementById('fdeck').value,st=document.getElementById('fst').value;
+  const f=cabins.map((c,i)=>({...c,_i:i})).filter(c=>{
+    if(q&&!c.cabin.toLowerCase().includes(q)&&!c.deck.toLowerCase().includes(q))return false;
+    if(dk&&c.deck!==dk)return false;
+    if(st==='done'&&!c.done)return false;
+    if(st==='pending'&&c.done)return false;
+    return true;
+  });
+  const el=document.getElementById('clist');
+  if(!f.length){el.innerHTML='<div class="empty">No cabins found</div>';return;}
+  el.innerHTML=f.map(c=>`<div class="cc ${c.done?'is-done':'is-pending'}" onclick="openEdit(${c._i})">
+    <div class="cc-strip"></div>
+    <div class="cc-body">
+      <div class="cleft">
+        <div class="cn">Cabin ${c.cabin}</div>
+        <div class="cd">${c.deck}${c.notes?'&nbsp;·&nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--t-muted)">'+c.notes.slice(0,28)+(c.notes.length>28?'…':'')+'</span>':''}</div>
+      </div>
+      <div class="cr">
+        <span class="badge ${c.done?'bdone':'bpend'}">${c.done?'✓ Done':'Pending'}</span>
+        <button class="db" onclick="askDel(event,${c._i})">&#215;</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+
+// ── DECKS LIST ────────────────────────────────────────────────────────
+function renderDecks(){
+  const el=document.getElementById('dlist');
+  if(!decks.length){el.innerHTML='<div class="empty">No decks. Tap + to add.</div>';return;}
+  el.innerHTML=decks.map((d,i)=>{
+    const cnt=cabins.filter(c=>c.deck===d.name).length;
+    const rangeLabel=d.allowedRange?`<span style="font-size:11px;color:var(--text2);margin-left:6px">${d.allowedRange.min}–${d.allowedRange.max}</span>`:'<span style="font-size:11px;color:var(--amber-text);margin-left:6px">No range set</span>';
+    return `<div class="dki"><div style="flex:1"><div class="dkn">${d.name}${rangeLabel}</div><div class="dkc" style="margin-top:2px">${cnt} cabin${cnt!==1?'s':''}</div></div>
+      <div class="dkb"><button class="dke" onclick="openEditDk(${i})">Edit</button><button class="dkd" onclick="askDel(event,${i},'deck')">&#215;</button></div></div>`;
+  }).join('');
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────
+function sw(tab){
+  curTab=tab;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['tracker','decks','report'][i]===tab));
+  ['tracker','decks','report'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');
+  if(tab==='report')renderReport();
+  if(tab==='decks')renderDecks();
+}
+function topAction(){if(curTab==='decks')openAddDk();else openAdd();}
+
+// ── SINGLE CABIN EDIT ─────────────────────────────────────────────────
+function openEdit(idx){
+  editIdx=idx;const c=cabins[idx];
+  document.getElementById('etit').textContent='Cabin '+c.cabin;
+  document.getElementById('edkl').textContent=c.deck;
+  document.getElementById('ptg').className='tg'+(c.done?' on':'');
+  document.getElementById('pdt').value=c.date||'';
+  document.getElementById('ecab').value=c.cabin;
+  document.getElementById('edk').value=c.deck;
+  document.getElementById('enotes').value=c.notes||'';
+  openM('emod');
+}
+function togProg(){
+  const t=document.getElementById('ptg'),w=t.classList.contains('on');
+  t.classList.toggle('on',!w);
+  if(!w&&!document.getElementById('pdt').value)document.getElementById('pdt').value=new Date().toISOString().split('T')[0];
+  if(w)document.getElementById('pdt').value='';
+}
+function saveEdit(){
+  const c=cabins[editIdx];
+  c.done=document.getElementById('ptg').classList.contains('on');
+  c.date=document.getElementById('pdt').value;
+  c.notes=document.getElementById('enotes').value;
+  persist();refresh();closeM('emod');toast('Saved');
+}
+
+// ── ADD CABIN ─────────────────────────────────────────────────────────
+function parseCabinInput(raw){
+  if(!raw||!raw.trim())return null;
+  const trimmed=raw.trim();
+  // Quoted mode: "name1; name2" — supports letters, spaces, special chars
+  const qm=trimmed.match(/^[“"](.*?)[”"]$/s);
+  if(qm){
+    const items=qm[1].split(';').map(s=>s.trim()).filter(Boolean);
+    return items.length?items:null;
+  }
+  // Numeric mode: 101, 101-110, 101;102
+  const nums=[];
+  const parts=trimmed.split(';').map(s=>s.trim()).filter(Boolean);
+  for(const part of parts){
+    if(/[^0-9\-]/.test(part)){
+      return {error:'Use quotes for names with letters: "'+part+'"'};
+    }
+    if(part.includes('-')){
+      const[a,b]=part.split('-').map(s=>s.trim());
+      const na=parseInt(a),nb=parseInt(b);
+      if(isNaN(na)||isNaN(nb)||na>nb||nb-na>2000)return null;
+      for(let i=na;i<=nb;i++)nums.push(String(i));
+    }else{if(!part)return null;nums.push(part);}
+  }
+  return nums.length?nums:null;
+}
+function previewAdd(){
+  const raw=document.getElementById('anum').value.trim();
+  const el=document.getElementById('add-preview');
+  if(!raw){el.textContent='';return;}
+  const nums=parseCabinInput(raw);
+  if(!nums){el.innerHTML='<span style="color:var(--red)">Invalid format</span>';return;}
+  el.textContent=nums.length===1?'1 cabin to add':`${nums.length} cabins: ${nums.slice(0,5).join(', ')}${nums.length>5?'...':''}`;
+}
+function openAdd(){
+  document.getElementById('anum').value='';
+  document.getElementById('add-preview').textContent='';
+  if(decks.length)document.getElementById('adk').value=decks[0].name;
+  openM('amod');setTimeout(()=>document.getElementById('anum').focus(),350);
+}
+function saveAdd(){
+  const raw=document.getElementById('anum').value.trim(),dk=document.getElementById('adk').value;
+  if(!raw){toast('Enter a cabin number');return;}
+  if(!dk){toast('Select a deck');return;}
+  const nums=parseCabinInput(raw);
+  if(!nums){toast('Invalid format. Use: 101, 101-110, or "Name1; Name2"');return;}
+  if(nums.error){toast(nums.error);return;}
+  // Get deck's allowed range
+  const deckObj=decks.find(d=>d.name===dk);
+  const allowedRange=deckObj?deckObj.allowedRange:null;
+  // Validate all cabins first
+  if(allowedRange){
+    const outOfRange=nums.filter(n=>!cabinInRange(n,allowedRange));
+    if(outOfRange.length>0){
+      toast(`Out of range: ${outOfRange.slice(0,3).join(', ')}${outOfRange.length>3?'...':''} — allowed: ${allowedRange.min}–${allowedRange.max}`);
+      return;
+    }
+  }
+  let added=0,skipped=0;
+  nums.forEach(cab=>{
+    if(cabins.some(c=>c.cabin.toLowerCase()===cab.toLowerCase()&&c.deck===dk)){skipped++;return;}
+    cabins.push({id:cab+'_'+Date.now()+'_'+Math.random(),cabin:cab,deck:dk,done:false,date:'',notes:''});
+    added++;
+  });
+  sortAll();persist();refresh();closeM('amod');
+  toast(skipped>0?`${added} added, ${skipped} skipped`:`${added} cabin${added!==1?'s':''} added`);
+}
+
+// ── DECK MANAGEMENT ───────────────────────────────────────────────────
+function getDeckNumber(name){const m=name.match(/[0-9]+/);return m?parseInt(m[0]):null;}
+
+function parseAllowedRange(raw){
+  // Accepts: "10100-10500" -> {min:10100, max:10500}
+  const parts=raw.trim().split('-').map(s=>s.trim());
+  if(parts.length!==2)return null;
+  const mn=parseInt(parts[0]),mx=parseInt(parts[1]);
+  if(isNaN(mn)||isNaN(mx)||mn>mx)return null;
+  return {min:mn,max:mx};
+}
+
+function cabinInRange(cabinStr, allowedRange){
+  if(!allowedRange)return true; // no restriction
+  const n=parseInt(cabinStr);
+  if(isNaN(n))return false;
+  return n>=allowedRange.min&&n<=allowedRange.max;
+}
+function previewDeck(){
+  const name=document.getElementById('dkname').value.trim();
+  const rangeRaw=document.getElementById('dkcabrange').value.trim();
+  const allowRaw=document.getElementById('dkallowrange')?document.getElementById('dkallowrange').value.trim():'';
+  const el=document.getElementById('dk-preview');
+  if(!name){el.textContent='';return;}
+  if(editDkIdx!==null){el.textContent='Editing deck name only (cabin rules unchanged)';return;}
+  const dn=getDeckNumber(name);
+  let lines=[];
+  if(rangeRaw){
+    const nums=parseCabinInput(rangeRaw);
+    if(!nums){el.innerHTML='<span style="color:var(--red)">Invalid generate range</span>';return;}
+    const ex=nums.slice(0,3).map(n=>dn?String(dn*1000+parseInt(n)||n):n);
+    lines.push(`Generate: ${nums.length} cabins (${ex.join(', ')}${nums.length>3?'...':''})`);
+  }else if(dn){
+    lines.push(`Generate: 15 cabins auto (${dn}001 – ${dn}015)`);
+  }
+  if(allowRaw){
+    const parsed=parseAllowedRange(allowRaw);
+    if(!parsed){el.innerHTML='<span style="color:var(--red)">Invalid allowed range — use format: 10100-10500</span>';return;}
+    lines.push(`Allowed cabins: ${parsed.min} – ${parsed.max}`);
+  }else{
+    lines.push('<span style="color:var(--red)">⚠ No allowed range set — all cabin numbers will be accepted</span>');
+  }
+  el.innerHTML=lines.join('<br>');
+}
+function openAddDk(){
+  editDkIdx=null;
+  document.getElementById('dktit').textContent='Add Deck';
+  document.getElementById('dkname').value='';
+  document.getElementById('dkcabrange').value='';
+  document.getElementById('dk-preview').textContent='';
+  document.getElementById('dksubtxt').style.display='block';
+  document.getElementById('dkcab-fi').style.display='block';
+  openM('dkmod');setTimeout(()=>document.getElementById('dkname').focus(),350);
+}
+function openEditDk(idx){
+  editDkIdx=idx;
+  const dk=decks[idx];
+  document.getElementById('dktit').textContent='Edit Deck';
+  document.getElementById('dkname').value=dk.name;
+  document.getElementById('dkcabrange').value='';
+  const arEl=document.getElementById('dkallowrange');
+  if(arEl){arEl.value=dk.allowedRange?`${dk.allowedRange.min}-${dk.allowedRange.max}`:'';}
+  document.getElementById('dk-preview').textContent='';
+  document.getElementById('dksubtxt').style.display='none';
+  document.getElementById('dkcab-fi').style.display='none';
+  openM('dkmod');setTimeout(()=>document.getElementById('dkname').focus(),350);
+}
+function saveDeck(){
+  const name=document.getElementById('dkname').value.trim();
+  if(!name){toast('Enter a deck name');return;}
+  if(editDkIdx===null){
+    if(decks.some(d=>d.name.toLowerCase()===name.toLowerCase())){toast('Deck already exists');return;}
+    // Parse allowed range
+    const allowRaw=document.getElementById('dkallowrange').value.trim();
+    let allowedRange=null;
+    if(allowRaw){
+      allowedRange=parseAllowedRange(allowRaw);
+      if(!allowedRange){toast('Invalid allowed range — use format: 10100-10500');return;}
+    }
+    decks.push({id:'dk'+Date.now(),name,allowedRange});
+    const dn=getDeckNumber(name);
+    const rangeRaw=document.getElementById('dkcabrange').value.trim();
+    if(rangeRaw){
+      const nums=parseCabinInput(rangeRaw);
+      if(nums)nums.forEach(n=>{
+        const cab=dn?String(dn*1000+parseInt(n)||n):n;
+        if(!cabins.some(c=>c.cabin===cab&&c.deck===name))
+          cabins.push({id:cab+'_'+Date.now()+'_'+Math.random(),cabin:cab,deck:name,done:false,date:'',notes:''});
+      });
+    }else if(dn){
+      for(let c=1;c<=15;c++)cabins.push({id:String(dn*1000+c)+'_'+Date.now()+'_'+Math.random(),cabin:String(dn*1000+c),deck:name,done:false,date:'',notes:''});
+    }
+  }else{
+    const old=decks[editDkIdx].name;
+    if(decks.some((d,i)=>i!==editDkIdx&&d.name.toLowerCase()===name.toLowerCase())){toast('Deck name already exists');return;}
+    decks[editDkIdx].name=name;
+    // Update allowed range if provided
+    const allowRaw=document.getElementById('dkallowrange')?document.getElementById('dkallowrange').value.trim():'';
+    if(allowRaw){
+      const parsed=parseAllowedRange(allowRaw);
+      if(!parsed){toast('Invalid allowed range');return;}
+      decks[editDkIdx].allowedRange=parsed;
+    }
+    cabins.forEach(c=>{if(c.deck===old)c.deck=name;});
+  }
+  sortAll();persist();buildSelects();renderDecks();renderList();closeM('dkmod');
+  toast(editDkIdx===null?'Deck added':'Deck updated');
+}
+
+// ── SINGLE DELETE ─────────────────────────────────────────────────────
+function askDel(e,idx,type='cabin'){
+  e.stopPropagation();delTarget={idx,type};
+  if(type==='cabin'){
+    document.getElementById('cfmt').textContent='Delete cabin?';
+    document.getElementById('cfmm').textContent=`Cabin ${cabins[idx].cabin} (${cabins[idx].deck}) will be permanently removed.`;
+  }else{
+    const cnt=cabins.filter(c=>c.deck===decks[idx].name).length;
+    document.getElementById('cfmt').textContent='Delete deck?';
+    document.getElementById('cfmm').textContent=`"${decks[idx].name}" and its ${cnt} cabin${cnt!==1?'s':''} will be removed.`;
+  }
+  openM('cfm');
+}
+function doDel(){
+  if(!delTarget)return;
+  const{idx,type}=delTarget;
+  if(type==='cabin'){cabins.splice(idx,1);}
+  else{const name=decks[idx].name;cabins=cabins.filter(c=>c.deck!==name);decks.splice(idx,1);}
+  sortAll();persist();refresh();renderDecks();closeM('cfm');toast('Deleted');
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+function mkPanelList(items,selSet,onToggle){
+  if(!items.length)return '<div class="empty">No cabins found</div>';
+  return items.map(c=>`
+    <div class="bulk-row${selSet.has(c._i)?' selected':''}" onclick="${onToggle}(${c._i})">
+      <div class="bulk-check${selSet.has(c._i)?' on':''}">${selSet.has(c._i)?'&#10003;':''}</div>
+      <div><div class="bulk-num">Cabin ${c.cabin}</div>
+        <div class="bulk-dk">${c.deck}&nbsp;&middot;&nbsp;<span style="font-weight:500;color:${c.done?'var(--green-text)':'var(--amber-text)'}">${c.done?'Done':'Pending'}</span></div>
+      </div>
+    </div>`).join('');
+}
+function filterCabins(q,filterStatus){
+  return cabins.map((c,i)=>({...c,_i:i})).filter(c=>{
+    if(q&&!c.cabin.toLowerCase().includes(q)&&!c.deck.toLowerCase().includes(q))return false;
+    if(filterStatus==='done'&&!c.done)return false;
+    if(filterStatus==='pending'&&c.done)return false;
+    return true;
+  });
+}
+function applyPillFilter(prefix,filter,colors){
+  ['all','pending','done'].forEach(f=>{
+    const btn=document.getElementById(`${prefix}-f-${f}`);
+    if(!btn)return;
+    const active=filter===f;
+    const color=active?(f==='done'?colors.done:f==='pending'?colors.pending:colors.all):'var(--bg)';
+    btn.style.background=color;
+    btn.style.color=active?'#fff':'var(--text2)';
+  });
+}
+function applyRangeToSel(raw,infoId,selSet){
+  const info=document.getElementById(infoId);
+  if(!raw){info.textContent='';return;}
+  const nums=parseCabinInput(raw);
+  if(!nums){info.innerHTML='<span style="color:var(--red)">Invalid format</span>';return;}
+  const numSet=new Set(nums.map(n=>n.toLowerCase()));
+  let matched=0;
+  cabins.forEach((c,i)=>{if(numSet.has(c.cabin.toLowerCase())){selSet.add(i);matched++;}});
+  info.textContent=matched?`${matched} cabin${matched!==1?'s':''} selected`:'No matching cabins found';
+  info.style.color=matched?'var(--green-text)':'var(--text2)';
+}
+
+// ── BULK DELETE ───────────────────────────────────────────────────────
+function openBulkDelete(){
+  delSel=new Set();delFilter='all';
+  ['del-search','del-range'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('del-range-info').textContent='';
+  document.getElementById('del-overlay').classList.add('open');
+  document.getElementById('del-sheet').classList.add('open');
+  setDelFilter('all');renderDelList();updateDelCount();
+}
+function delAllConfirm(){
+  openM('del-all-cfm');
+}
+function doDelAll(){
+  cabins=[];
+  decks=[];
+  closeM('del-all-cfm');
+  closeDel();
+  sortAll();persist();refresh();renderDecks();
+  toast('All cabins and decks deleted');
+}
+function closeDel(){
+  document.getElementById('del-overlay').classList.remove('open');
+  document.getElementById('del-sheet').classList.remove('open');
+}
+function setDelFilter(f){
+  delFilter=f;
+  applyPillFilter('del',f,{all:'var(--blue)',pending:'var(--red)',done:'var(--green)'});
+  renderDelList();
+}
+function delRangeInput(){
+  applyRangeToSel(document.getElementById('del-range').value.trim(),'del-range-info',delSel);
+  renderDelList();updateDelCount();
+}
+function delToggleAll(){
+  const q=document.getElementById('del-search').value.toLowerCase();
+  const f=filterCabins(q,delFilter);
+  const all=f.length>0&&f.every(c=>delSel.has(c._i));
+  f.forEach(c=>all?delSel.delete(c._i):delSel.add(c._i));
+  renderDelList();updateDelCount();
+}
+function renderDelList(){
+  const q=document.getElementById('del-search').value.toLowerCase();
+  const f=filterCabins(q,delFilter);
+  const all=f.length>0&&f.every(c=>delSel.has(c._i));
+  document.getElementById('del-all-btn').textContent=all?'None':'All';
+  document.getElementById('del-list').innerHTML=mkPanelList(f,delSel,'delToggle');
+}
+function delToggle(idx){delSel.has(idx)?delSel.delete(idx):delSel.add(idx);renderDelList();updateDelCount();}
+function updateDelCount(){
+  const n=delSel.size;
+  document.getElementById('del-count').textContent=n===0?'0 selected':`${n} cabin${n!==1?'s':''} selected`;
+  const btn=document.getElementById('del-btn');
+  btn.disabled=n===0;btn.style.opacity=n>0?'1':'0.35';
+  btn.textContent=n>0?`Delete ${n} cabin${n!==1?'s':''}`:'Delete selected';
+}
+function delConfirm(){
+  if(!delSel.size)return;
+  document.getElementById('del-cfm-msg').textContent=
+    `You are about to permanently delete ${delSel.size} cabin${delSel.size!==1?'s':''} from the project. This cannot be undone.`;
+  openM('del-cfm');
+}
+function doDelBulk(){
+  const indices=Array.from(delSel).sort((a,b)=>b-a);
+  const n=indices.length;
+  indices.forEach(i=>cabins.splice(i,1));
+  delSel=new Set();
+  closeM('del-cfm');sortAll();persist();refresh();closeDel();
+  toast(`${n} cabin${n!==1?'s':''} deleted`);
+}
+
+// ── CABIN STATUS ──────────────────────────────────────────────────────
+function openBulkStatus(){
+  bstSel=new Set();bstFilter='all';bstPendingDone=null;
+  ['bst-search','bst-range'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('bst-range-info').textContent='';
+  // Populate deck listbox with current decks
+  const dkSel=document.getElementById('bst-deck-filter');
+  dkSel.innerHTML='<option value="">All decks</option>'+
+    decks.map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
+  dkSel.value='';
+  document.getElementById('bst-overlay').classList.add('open');
+  document.getElementById('bst-sheet').classList.add('open');
+  setBstFilter('all');renderBstList();updateBstCount();
+}
+function closeBst(){
+  document.getElementById('bst-overlay').classList.remove('open');
+  document.getElementById('bst-sheet').classList.remove('open');
+}
+function setBstFilter(f){
+  bstFilter=f;
+  applyPillFilter('bst',f,{all:'var(--blue)',pending:'var(--red)',done:'var(--green)'});
+  renderBstList();
+}
+function bstRangeInput(){
+  applyRangeToSel(document.getElementById('bst-range').value.trim(),'bst-range-info',bstSel);
+  renderBstList();updateBstCount();
+}
+function bstToggleAll(){
+  const q=document.getElementById('bst-search').value.toLowerCase();
+  const selectedDeck=document.getElementById('bst-deck-filter').value;
+  let f=filterCabins(q,bstFilter);
+  if(selectedDeck) f=f.filter(c=>c.deck===selectedDeck);
+  const all=f.length>0&&f.every(c=>bstSel.has(c._i));
+  f.forEach(c=>all?bstSel.delete(c._i):bstSel.add(c._i));
+  renderBstList();updateBstCount();
+}
+function renderBstList(){
+  const q=document.getElementById('bst-search').value.toLowerCase();
+  const selectedDeck=document.getElementById('bst-deck-filter').value;
+  // Filter by status AND deck
+  let f=filterCabins(q,bstFilter);
+  if(selectedDeck) f=f.filter(c=>c.deck===selectedDeck);
+  const all=f.length>0&&f.every(c=>bstSel.has(c._i));
+  document.getElementById('bst-all-btn').textContent=all?'None':'All';
+  document.getElementById('bst-list').innerHTML=mkPanelList(f,bstSel,'bstToggle');
+}
+function bstToggle(idx){bstSel.has(idx)?bstSel.delete(idx):bstSel.add(idx);renderBstList();updateBstCount();}
+function updateBstCount(){
+  const n=bstSel.size;
+  document.getElementById('bst-count').textContent=n===0?'0 selected':`${n} cabin${n!==1?'s':''} selected`;
+  ['bst-done-btn','bst-pend-btn'].forEach(id=>{const b=document.getElementById(id);b.disabled=n===0;b.style.opacity=n>0?'1':'0.35';});
+}
+function bstConfirm(done){
+  if(!bstSel.size)return;
+  bstPendingDone=done;
+  const n=bstSel.size;
+  document.getElementById('bst-cfm-title').textContent=done?'Mark as Done':'Mark as Pending';
+  document.getElementById('bst-cfm-msg').textContent=`You are about to mark ${n} cabin${n!==1?'s':''} as "${done?'Done':'Pending'}". Are you sure?`;
+  document.getElementById('bst-cfm-ok').style.background=done?'var(--green)':'var(--red)';
+  openM('bst-cfm');
+}
+function bstApply(){
+  if(bstPendingDone===null)return;
+  const done=bstPendingDone;
+  const today=new Date().toISOString().split('T')[0];
+  bstSel.forEach(i=>{cabins[i].done=done;if(done&&!cabins[i].date)cabins[i].date=today;if(!done)cabins[i].date='';});
+  const n=bstSel.size;
+  bstSel=new Set();bstPendingDone=null;
+  closeM('bst-cfm');persist();refresh();renderBstList();updateBstCount();
+  toast(`${n} cabin${n!==1?'s':''} marked as ${done?'Done':'Pending'}`);
+}
+
+// ── EDIT CABINS ───────────────────────────────────────────────────────
+function openBulkEdit(){
+  beditSel=new Set();beditPendingDeck=null;
+  const s=document.getElementById('bedit-search');if(s)s.value='';
+  buildSelects();
+  document.getElementById('bedit-overlay').classList.add('open');
+  document.getElementById('bedit-sheet').classList.add('open');
+  renderBeditList();
+}
+function closeBedit(){
+  document.getElementById('bedit-overlay').classList.remove('open');
+  document.getElementById('bedit-sheet').classList.remove('open');
+}
+function beditRangeInput(){
+  applyRangeToSel(document.getElementById('bedit-range').value.trim(),'bedit-range-info',beditSel);
+  renderBeditList();updateBeditCount();
+}
+function beditToggleAll(){
+  const q=document.getElementById('bedit-search').value.toLowerCase();
+  const f=filterCabins(q,'all');
+  const all=f.length>0&&f.every(c=>beditSel.has(c._i));
+  f.forEach(c=>all?beditSel.delete(c._i):beditSel.add(c._i));
+  renderBeditList();updateBeditCount();
+}
+let beditSingleIdx=null;
+
+function renderBeditList(){
+  const q=document.getElementById('bedit-search').value.toLowerCase();
+  const f=filterCabins(q,'all');
+  const el=document.getElementById('bedit-list');
+  if(!f.length){el.innerHTML='<div class="empty">No cabins found</div>';return;}
+  el.innerHTML=f.map(c=>`
+    <div class="bulk-row" onclick="beditOpenSingle(${c._i})" style="justify-content:space-between">
+      <div>
+        <div class="bulk-num">Cabin ${c.cabin}</div>
+        <div class="bulk-dk">${c.deck}&nbsp;&middot;&nbsp;<span style="font-weight:500;color:${c.done?'var(--green-text)':'var(--amber-text)'}">${c.done?'Done':'Pending'}</span></div>
+      </div>
+      <span style="color:var(--blue);font-size:13px;font-weight:500">Edit &rsaquo;</span>
+    </div>`).join('');
+}
+
+function beditToggle(idx){renderBeditList();}
+function updateBeditCount(){}
+
+function beditRangeInput(){renderBeditList();}
+function beditToggleAll(){renderBeditList();}
+
+function beditOpenSingle(idx){
+  beditSingleIdx=idx;
+  const c=cabins[idx];
+  document.getElementById('bedit-single-title').textContent='Cabin '+c.cabin;
+  document.getElementById('bedit-single-deck').textContent=c.deck;
+  document.getElementById('bedit-single-cabin').value=c.cabin;
+  const sel=document.getElementById('bedit-single-deck-sel');
+  sel.innerHTML=decks.map(d=>`<option value="${d.name}"${d.name===c.deck?' selected':''}>${d.name}</option>`).join('');
+  document.getElementById('bedit-single-notes').value=c.notes||'';
+  openM('bedit-single-modal');
+}
+
+function beditSingleSave(){
+  const newCabin=document.getElementById('bedit-single-cabin').value.trim();
+  const newDeck=document.getElementById('bedit-single-deck-sel').value;
+  const newNotes=document.getElementById('bedit-single-notes').value;
+  if(!newCabin){toast('Cabin number cannot be empty');return;}
+  // Validate against deck's allowed range
+  const deckObj=decks.find(d=>d.name===newDeck);
+  if(deckObj&&deckObj.allowedRange&&!cabinInRange(newCabin,deckObj.allowedRange)){
+    toast(`Cabin ${newCabin} is outside allowed range ${deckObj.allowedRange.min}–${deckObj.allowedRange.max} for ${newDeck}`);
+    return;
+  }
+  if(cabins.some((c,i)=>i!==beditSingleIdx&&c.cabin.toLowerCase()===newCabin.toLowerCase()&&c.deck===newDeck)){
+    toast('Cabin '+newCabin+' already exists in '+newDeck);return;
+  }
+  cabins[beditSingleIdx].cabin=newCabin;
+  cabins[beditSingleIdx].deck=newDeck;
+  cabins[beditSingleIdx].notes=newNotes;
+  closeM('bedit-single-modal');
+  sortAll();persist();refresh();renderBeditList();
+  toast('Cabin updated');
+}
+
+function beditConfirm(){}
+function beditApply(){}
+
+// ── REPORT ────────────────────────────────────────────────────────────
+function renderReport(){
+  const tot=cabins.length,done=cabins.filter(c=>c.done).length,pend=tot-done;
+  const pr=tot?done/tot*100:0;
+  const pct=pr===0?0:pr<0.1?pr.toFixed(3):pr<1?pr.toFixed(2):pr<10?pr.toFixed(1):Math.round(pr);
+  const ds={};cabins.forEach(c=>{if(!ds[c.deck])ds[c.deck]={total:0,done:0};ds[c.deck].total++;if(c.done)ds[c.deck].done++;});
+  const sDecks=decks.map(d=>d.name).filter(n=>ds[n]);
+  const drows=sDecks.map(d=>{const s=ds[d],dp=s.total?Math.round(s.done/s.total*100):0;
+    return `<div class="dr"><span class="dn">${d}</span><span class="dc">${s.done}/${s.total}</span><div class="mb"><div class="mf" style="width:${dp}%"></div></div></div>`;}).join('');
+  document.getElementById('rbody').innerHTML=`<div class="rp">
+    <p class="st">Overall progress</p>
+    <div class="pc"><div class="ph"><span>${done} of ${tot} locks done</span><span style="color:var(--green-text);font-weight:600">${pct}%</span></div>
+      <div class="pb"><div class="pf" style="width:${pr}%"></div></div></div>
+    <p class="st">By deck</p>
+    <div class="dl">${drows||'<div style="padding:1rem;color:var(--text2);font-size:13px">No data yet</div>'}</div>
+    <button class="eb" id="expbtn" onclick="doExport()">&#8595;&nbsp; Export to Excel</button>
+    <p class="st">Client email</p>
+    <div class="ec">
+      <div class="eh"><span>Ready to copy</span><button class="cpb" onclick="copyEmail()">Copy</button></div>
+      <div class="ebody" id="etxt">${buildEmail(tot,done,pend,pct)}</div>
+    </div></div>`;
+}
+function buildEmail(tot,done,pend,pct){
+  const rem=100-pct;let s='';
+  if(pct>=100)s=`\u2705 The project has been completed in full. All ${tot} locks have been successfully replaced and programmed.`;
+  else if(pct>=75)s=`The project is in its final stage. With ${rem}% remaining (${pend} locks), we are on track to complete the installation as scheduled.`;
+  else if(pct>=50)s=`The project has passed the halfway mark. Our team continues to work efficiently across all decks to maintain the planned schedule.`;
+  else s=`Work on the lock replacement programme is progressing as planned.`;
+  return `Dear [Client Name],\n\nPlease find below the daily progress update for the lock replacement project at your property.\n\n\u2014\u2014\u2014 PROJECT STATUS UPDATE \u2014\u2014\u2014\n\nAs of today, we have successfully completed ${done} out of ${tot} lock replacements, representing ${pct}% of the total project scope.\n\n  \u2022 Locks completed and programmed : ${done}\n  \u2022 Locks pending                  : ${pend}\n\n${s}\n\nShould you have any questions or require additional information, please do not hesitate to contact us.\n\nKind regards,\n[Your Name]\nAssa Abloy \u2014 Project Team`;
+}
+function copyEmail(){
+  const txt=document.getElementById('etxt').innerText;
+  navigator.clipboard.writeText(txt).then(()=>{const b=document.querySelector('.cpb');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',2000);}).catch(()=>toast('Long-press to copy'));
+}
+
+// ── EXCEL EXPORT ──────────────────────────────────────────────────────
+async function doExport(){
+  const btn=document.getElementById('expbtn');
+  btn.disabled=true;btn.textContent='Building Excel...';
+  try{
+    if(typeof ExcelJS==='undefined'){
+      await new Promise((resolve,reject)=>{
+        const s=document.createElement('script');
+        s.src='https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js';
+        s.onload=resolve;
+        s.onerror=()=>reject(new Error('Could not load Excel library. Please check internet connection.'));
+        document.head.appendChild(s);
+      });
+    }
+    const wb=new ExcelJS.Workbook();
+    const DARK='1F3864',MID='2E75B6',LBLUE='BDD7EE',LGREEN='E2EFDA',LRED='FFCCCC',LGRAY='F2F2F2',WHITE='FFFFFF',YELLOW='FFF9C4';
+    const mkB=()=>({top:{style:'thin'},bottom:{style:'thin'},left:{style:'thin'},right:{style:'thin'}});
+    const mkF=c=>({type:'pattern',pattern:'solid',fgColor:{argb:'FF'+c}});
+    const mkFnt=(o={})=>({name:'Arial',size:o.sz||10,bold:o.bold||false,color:{argb:'FF'+(o.color||'000000')},italic:o.italic||false});
+    const ws=wb.addWorksheet('Lock Tracker');
+    const n=cabins.length;
+    ws.columns=[{key:'a',width:5},{key:'b',width:16},{key:'c',width:14},{key:'d',width:14},{key:'e',width:15},{key:'f',width:13},{key:'g',width:26}];
+    ws.mergeCells('A1:G1');
+    const r1=ws.getCell('A1');r1.value='ASSA ABLOY \u2014 Lock Replacement Project Tracker';
+    r1.font=mkFnt({bold:true,sz:14,color:WHITE});r1.fill=mkF(DARK);r1.alignment={horizontal:'center',vertical:'middle'};ws.getRow(1).height=32;
+    ws.mergeCells('A2:G2');
+    const r2=ws.getCell('A2');r2.value={formula:'TODAY()',result:new Date()};r2.numFmt='"Report date: "DD/MM/YYYY';
+    r2.font=mkFnt({sz:10,color:'555555',italic:true});r2.fill=mkF(LBLUE);r2.alignment={horizontal:'right',vertical:'middle'};ws.getRow(2).height=18;
+    const hdrs=['#','Cabin Number','Deck','Programmed','Date Programmed','Status','Notes'];
+    const r3=ws.getRow(3);r3.height=36;
+    hdrs.forEach((h,i)=>{const c=r3.getCell(i+1);c.value=h;c.font=mkFnt({bold:true,sz:11,color:WHITE});c.fill=mkF(i===0?DARK:MID);c.border=mkB();c.alignment={horizontal:'center',vertical:'middle',wrapText:true};});
+    const lastRow=3+n;
+    // Add Yes/No dropdown validation for Programmed column (D)
+    ws.dataValidations.add(`D4:D${lastRow}`,{
+      type:'list', allowBlank:true, formulae:['"Yes,No"'],
+      showErrorMessage:true, errorStyle:'stop',
+      errorTitle:'Invalid value', error:'Please select Yes or No'
+    });
+    cabins.forEach((cab,i)=>{
+      const rn=i+4,bg=i%2===0?LGRAY:WHITE;const row=ws.getRow(rn);row.height=18;
+      // Col A: index, B: cabin, C: deck, D: Programmed (Yes/No), E: Date, F: Status formula, G: Notes
+      const vals=[i+1,cab.cabin,cab.deck,cab.done?'Yes':'',cab.date||'',null,cab.notes||''];
+      vals.forEach((v,ci)=>{
+        const cell=row.getCell(ci+1);
+        cell.border=mkB();cell.font=mkFnt();
+        cell.alignment={horizontal:ci===6?'left':'center',vertical:'middle'};
+        if(ci===5){
+          // Status: formula based on Programmed column
+          cell.value={formula:`IF(D${rn}="Yes","✅ Done","⬜ Pending")`,result:cab.done?'✅ Done':'⬜ Pending'};
+          cell.fill=mkF(cab.done?LGREEN:bg);
+        } else {
+          cell.value=v;
+          cell.fill=mkF(bg);
+          if(ci===4&&v)cell.numFmt='DD/MM/YYYY';
+        }
+      });
+    });
+    // Conditional formatting: green for Done status
+    ws.addConditionalFormatting({
+      ref:`F4:F${lastRow}`,
+      rules:[{type:'containsText',operator:'containsText',text:'Done',style:{fill:{type:'pattern',pattern:'solid',bgColor:{argb:'FFE2EFDA'}}}}]
+    });
+    ws.views=[{state:'frozen',xSplit:0,ySplit:3,activeCell:'A4'}];
+    const rpt=wb.addWorksheet('Daily Report');
+    rpt.columns=[{width:34},{width:18},{width:18}];
+    const done=cabins.filter(c=>c.done).length,pend=n-done,pct=n?Math.round(done/n*100):0;
+    const ds={};cabins.forEach(c=>{if(!ds[c.deck])ds[c.deck]={total:0,done:0};ds[c.deck].total++;if(c.done)ds[c.deck].done++;});
+    const sDecks=decks.map(d=>d.name).filter(nm=>ds[nm]);
+    rpt.mergeCells('A1:C1');const rt1=rpt.getCell('A1');rt1.value='ASSA ABLOY \u2014 Daily Progress Report';rt1.font=mkFnt({bold:true,sz:14,color:WHITE});rt1.fill=mkF(DARK);rt1.alignment={horizontal:'center',vertical:'middle'};rpt.getRow(1).height=32;
+    rpt.mergeCells('A2:C2');const rt2=rpt.getCell('A2');rt2.value={formula:'TODAY()',result:new Date()};rt2.numFmt='"Report date: "DD/MM/YYYY';rt2.font=mkFnt({sz:10,color:'555555',italic:true});rt2.fill=mkF(LBLUE);rt2.alignment={horizontal:'right',vertical:'middle'};rpt.getRow(2).height=18;
+    const addRH=(r,v,bg)=>{rpt.mergeCells(`A${r}:C${r}`);const c=rpt.getCell(`A${r}`);c.value=v;c.font=mkFnt({bold:true,sz:11,color:WHITE});c.fill=mkF(bg||DARK);c.border=mkB();c.alignment={horizontal:'center',vertical:'middle'};rpt.getRow(r).height=24;};
+    const addRR=(r,lbl,val,nf,bg,bold)=>{const lc=rpt.getCell(`A${r}`);lc.value=lbl;lc.font=mkFnt({bold:true,sz:10,color:DARK});lc.fill=mkF(LBLUE);lc.border=mkB();lc.alignment={horizontal:'left',vertical:'middle'};rpt.mergeCells(`B${r}:C${r}`);const vc=rpt.getCell(`B${r}`);vc.value=val;vc.font=mkFnt({bold:!!bold,sz:10});vc.fill=mkF(bg||WHITE);vc.border=mkB();vc.alignment={horizontal:'center',vertical:'middle'};if(nf)vc.numFmt=nf;rpt.getRow(r).height=22;};
+    addRH(4,'OVERALL PROGRESS');
+    // Use formulas so Daily Report updates when Programmed column changes in Lock Tracker
+    addRR(5,'Total Locks in Project',{formula:`COUNTA('Lock Tracker'!B4:B${lastRow})`,result:n},'0',WHITE);
+    addRR(6,'Completed (Programmed)',{formula:`COUNTIF('Lock Tracker'!D4:D${lastRow},"Yes")`,result:done},'0',LGREEN);
+    addRR(7,'Pending',{formula:`COUNTA('Lock Tracker'!B4:B${lastRow})-COUNTIF('Lock Tracker'!D4:D${lastRow},"Yes")`,result:pend},'0',YELLOW);
+    addRR(8,'% Completion',{formula:`IFERROR(COUNTIF('Lock Tracker'!D4:D${lastRow},"Yes")/COUNTA('Lock Tracker'!B4:B${lastRow}),0)`,result:pct/100},'0.0%',LGREEN,true);
+    addRR(9,'% Remaining',{formula:`IFERROR(1-COUNTIF('Lock Tracker'!D4:D${lastRow},"Yes")/COUNTA('Lock Tracker'!B4:B${lastRow}),1)`,result:(100-pct)/100},'0.0%',LRED,true);
+    addRH(11,'PROGRESS BY DECK');
+    ['Deck','Total','Done \u2705'].forEach((h,i)=>{const c=rpt.getCell(12,i+1);c.value=h;c.font=mkFnt({bold:true,sz:11,color:WHITE});c.fill=mkF(MID);c.border=mkB();c.alignment={horizontal:'center',vertical:'middle'};});rpt.getRow(12).height=22;
+    sDecks.forEach((dk,i)=>{const rn=13+i,bg=i%2===0?WHITE:LGRAY,s=ds[dk]||{total:0,done:0};
+      const dkEsc=dk.replace(/'/g,"\'");
+      [[dk,LGRAY,dk],
+       [{formula:`COUNTIF('Lock Tracker'!C4:C${lastRow},"${dk}")`,result:s.total},WHITE,s.total],
+       [{formula:`COUNTIFS('Lock Tracker'!C4:C${lastRow},"${dk}",'Lock Tracker'!D4:D${lastRow},"Yes")`,result:s.done},LGREEN,s.done]
+      ].forEach(([v,cbg],ci)=>{const cell=rpt.getCell(rn,ci+1);cell.value=v;cell.font=mkFnt({bold:ci===0});cell.fill=mkF(ci===0?bg:cbg);cell.border=mkB();cell.alignment={horizontal:ci===0?'left':'center',vertical:'middle'};});rpt.getRow(rn).height=20;
+    });
+    const er=13+sDecks.length+2;addRH(er,'CLIENT EMAIL \u2014 DAILY UPDATE');
+    // Email as formula — auto-updates when Programmed column changes
+    // B5=Total, B6=Done, B7=Pending, B8=% Completion, B9=% Remaining
+    const emailFormula=(
+      '"Dear [Client Name],"'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"Please find below the daily progress update for the lock replacement project at your property."'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"\u2014\u2014\u2014 PROJECT STATUS UPDATE \u2014\u2014\u2014"'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"As of today, we have successfully completed "&B6&" out of "&B5&" lock replacements, representing "&TEXT(B8,\"0.0%\")&" of the total project scope."'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"  \u2022 Locks completed and programmed : "&B6'
+      +'&CHAR(10)'
+      +'&"  \u2022 Locks pending                  : "&B7'
+      +'&CHAR(10)&CHAR(10)'
+      +'&IF(B8>=1,"\u2705 The project has been completed in full. All "&B5&" locks have been successfully replaced and programmed.",'
+      +'IF(B8>=0.75,"The project is in its final stage. With "&TEXT(B9,\"0.0%\")&" remaining ("&B7&" locks), we are on track to complete the installation as scheduled.",'
+      +'IF(B8>=0.5,"The project has passed the halfway mark. Our team continues to work efficiently across all decks to maintain the planned schedule.",'
+      +'"Work on the lock replacement programme is progressing as planned.")))'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"Should you have any questions or require additional information, please do not hesitate to contact us."'
+      +'&CHAR(10)&CHAR(10)'
+      +'&"Kind regards,"'
+      +'&CHAR(10)&"[Your Name]"'
+      +'&CHAR(10)&"Assa Abloy \u2014 Project Team"'
+    );
+    // Calculate current email text for result preview
+    let stxt='';
+    if(pct>=100)stxt='\u2705 The project has been completed in full. All '+n+' locks have been successfully replaced and programmed.';
+    else if(pct>=75)stxt='The project is in its final stage. With '+(100-pct)+'% remaining ('+pend+' locks), we are on track to complete the installation as scheduled.';
+    else if(pct>=50)stxt='The project has passed the halfway mark. Our team continues to work efficiently across all decks to maintain the planned schedule.';
+    else stxt='Work on the lock replacement programme is progressing as planned.';
+    const etxtResult='Dear [Client Name],\n\nPlease find below the daily progress update for the lock replacement project at your property.\n\n\u2014\u2014\u2014 PROJECT STATUS UPDATE \u2014\u2014\u2014\n\nAs of today, we have successfully completed '+done+' out of '+n+' lock replacements, representing '+(pct)+'% of the total project scope.\n\n  \u2022 Locks completed and programmed : '+done+'\n  \u2022 Locks pending                  : '+pend+'\n\n'+stxt+'\n\nShould you have any questions or require additional information, please do not hesitate to contact us.\n\nKind regards,\n[Your Name]\nAssa Abloy \u2014 Project Team';
+    const erow=er+1;rpt.mergeCells(`A${erow}:C${erow+20}`);
+    const ec=rpt.getCell(`A${erow}`);
+    ec.value={formula:emailFormula, result:etxtResult};
+    ec.font=mkFnt({sz:10});ec.fill=mkF('F0F4FF');ec.border=mkB();ec.alignment={horizontal:'left',vertical:'top',wrapText:true};
+    for(let r=erow;r<=erow+20;r++)rpt.getRow(r).height=18;
+    const tipRow=erow+21;rpt.mergeCells(`A${tipRow}:C${tipRow}`);
+    const tip=rpt.getCell(`A${tipRow}`);
+    tip.value='💡 Replace [Client Name] and [Your Name] before sending. Add the date when pasting into your email.';
+    tip.font=mkFnt({sz:9,color:'777777',italic:true});tip.fill=mkF('FAFAFA');
+    tip.alignment={horizontal:'left',vertical:'middle'};rpt.getRow(tipRow).height=16;
+    rpt.views=[{state:'frozen',xSplit:0,ySplit:2,activeCell:'A3'}];
+    const buf=await wb.xlsx.writeBuffer();
+    const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const today=new Date().toLocaleDateString('en-GB').replace(/\//g,'-');
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`LockTracker_${today}.xlsx`;a.click();
+    toast('Excel exported!');
+  }catch(err){toast('Error: '+err.message);console.error(err);}
+  btn.disabled=false;btn.innerHTML='&#8595;&nbsp; Export to Excel';
+}
+
+
+
+
+
+
+
+
+
+
+// ── MODAL HELPERS ─────────────────────────────────────────────────────
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function oc(e,id){/* click-outside disabled */}
+// ── EXCEL IMPORT ─────────────────────────────────────
+async function importExcel(event){
+  const file=event.target.files[0];
+  if(!file){return;}
+  // Reset input so same file can be re-imported
+  event.target.value='';
+
+  // Load SheetJS if not available
+  if(typeof XLSX==='undefined'){
+    await new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload=resolve;
+      s.onerror=()=>reject(new Error('Could not load Excel reader'));
+      document.head.appendChild(s);
+    });
+  }
+
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=new Uint8Array(e.target.result);
+      const wb=XLSX.read(data,{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+
+      // Skip header row (row 0 = A1/B1), start from row index 1 (A2/B2)
+      let added=0, skipped=0, decksCreated=0;
+      const errors=[];
+
+      for(let i=1;i<rows.length;i++){
+        const row=rows[i];
+        const deckVal=String(row[0]||'').trim();
+        const cabinVal=String(row[1]||'').trim();
+
+        if(!deckVal&&!cabinVal)continue; // skip empty rows
+        if(!deckVal){errors.push('Row '+(i+1)+': missing deck');continue;}
+        if(!cabinVal){errors.push('Row '+(i+1)+': missing cabin');continue;}
+
+        // Create deck if it doesn't exist
+        if(!decks.find(d=>d.name.toLowerCase()===deckVal.toLowerCase())){
+          decks.push({id:'dk'+Date.now()+'_'+i,name:deckVal,allowedRange:null});
+          decksCreated++;
+        }
+
+        // Find the correct deck name (preserve original case)
+        const existingDeck=decks.find(d=>d.name.toLowerCase()===deckVal.toLowerCase());
+        const deckName=existingDeck?existingDeck.name:deckVal;
+
+        // Check for duplicate (same deck + same cabin)
+        if(cabins.some(c=>c.deck.toLowerCase()===deckName.toLowerCase()&&c.cabin.toLowerCase()===cabinVal.toLowerCase())){
+          skipped++;
+          continue;
+        }
+
+        cabins.push({
+          id:cabinVal+'_'+deckName+'_'+Date.now()+'_'+Math.random(),
+          cabin:cabinVal,
+          deck:deckName,
+          done:false,
+          date:'',
+          notes:''
+        });
+        added++;
+      }
+
+      if(errors.length>0&&errors.length<=5){
+        toast('Imported '+added+' cabins. Errors: '+errors.join('; '));
+      } else if(errors.length>5){
+        toast('Imported '+added+' cabins. '+errors.length+' rows had errors.');
+      } else if(added===0&&skipped>0){
+        toast('No new cabins — '+skipped+' duplicates skipped.');
+      } else {
+        let msg='Imported '+added+' cabin'+(added!==1?'s':'');
+        if(decksCreated>0)msg+=', '+decksCreated+' deck'+(decksCreated!==1?'s':'')+' created';
+        if(skipped>0)msg+=', '+skipped+' duplicates skipped';
+        toast(msg);
+      }
+
+      sortAll();persist();refresh();
+      if(curTab==='decks')renderDecks();
+
+    }catch(err){
+      toast('Import failed: '+err.message);
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+
+init();
+
+
+// ── SIDEBAR ──────────────────────────────────────────
+function openSidebar(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sb-overlay').classList.add('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('open');
+}
+
+// ── OVERRIDE sw() for new nav ─────────────────────────
+const _swOrig=sw;
+function sw(tab){
+  curTab=tab;
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'));
+  const ni=document.getElementById('nav-'+tab);
+  if(ni)ni.classList.add('active');
+  ['tracker','decks','report'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+  });
+  if(tab==='report')renderReport();
+  if(tab==='decks')renderDecks();
+  closeSidebar();
+}
+
+// ── OVERRIDE renderStats for KPI cards ───────────────
+function renderStats(){
+  const tot=cabins.length,done=cabins.filter(c=>c.done).length,pend=tot-done;
+  const pr=tot?done/tot*100:0;
+  const pct=pr===0?'0':pr<0.1?pr.toFixed(3):pr<1?pr.toFixed(2):pr<10?pr.toFixed(1):Math.round(pr);
+  document.getElementById('topbar-sub').textContent=done+'/'+tot+' · '+pct+'%';
+  if(PROJECT_ID!=='DEFAULT_PROJECT'){
+    document.getElementById('topbar-title').textContent='Lock Tracker — '+PROJECT_ID;
+    document.getElementById('sb-proj-name').textContent=PROJECT_ID;
+  }
+  document.getElementById('kpi-grid').innerHTML=`
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Total Locks</div>
+        <div class="kpi-icon" style="background:#EEF2FF;color:#3B5BDB">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="3" width="16" height="18" rx="2.5" stroke="#3B5BDB" stroke-width="1.8"/>
+            <rect x="8" y="7" width="8" height="1.2" rx=".6" fill="#3B5BDB" opacity=".5"/>
+            <path d="M9 14.5 Q12 12 15 14.5" stroke="#3B5BDB" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".6"/>
+            <circle cx="12" cy="14.5" r="1.1" fill="#3B5BDB"/>
+            <circle cx="12" cy="19" r=".8" fill="#4ADE80"/>
+          </svg>
+        </div>
+      </div>
+      <div class="kpi-val">${tot}</div>
+      <div class="kpi-sub">locks in project</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Completed</div>
+        <div class="kpi-icon" style="background:var(--green-soft);color:var(--green)">✓</div>
+      </div>
+      <div class="kpi-val" style="color:var(--green-text)">${done}</div>
+      <div class="kpi-sub">programmed &amp; done</div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${pr}%;background:var(--green)"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Pending</div>
+        <div class="kpi-icon" style="background:var(--amber-soft);color:var(--amber)">⏳</div>
+      </div>
+      <div class="kpi-val" style="color:var(--amber-text)">${pend}</div>
+      <div class="kpi-sub">locks remaining</div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${tot?pend/tot*100:0}%;background:var(--amber)"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-label">Progress</div>
+        <div class="kpi-icon" style="background:var(--blue-soft);color:var(--blue)">📈</div>
+      </div>
+      <div class="kpi-val" style="color:var(--blue)">${pct}%</div>
+      <div class="kpi-sub">completion rate</div>
+      <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${pr}%;background:var(--blue)"></div></div>
+    </div>`;
+}
+
+// ── OVERRIDE renderList ───────────────────────────────
+function renderList(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const dk=document.getElementById('fdeck').value,st=document.getElementById('fst').value;
+  const f=cabins.map((c,i)=>({...c,_i:i})).filter(c=>{
+    if(q&&!c.cabin.toLowerCase().includes(q)&&!c.deck.toLowerCase().includes(q))return false;
+    if(dk&&c.deck!==dk)return false;
+    if(st==='done'&&!c.done)return false;
+    if(st==='pending'&&c.done)return false;
+    return true;
+  });
+  const el=document.getElementById('clist');
+  if(!f.length){
+    el.innerHTML=`<div class="empty-state">
+      <div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="opacity:.3"><rect x="3" y="2" width="18" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="6" width="10" height="1.2" rx=".6" fill="currentColor" opacity=".5"/><path d="M9 14 Q12 11.5 15 14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/><circle cx="12" cy="14" r="1.2" fill="currentColor"/><circle cx="12" cy="18.5" r="1" fill="#4ADE80"/></svg></div>
+      <div class="empty-title">${cabins.length===0?'No cabins yet':'No cabins found'}</div>
+      <div class="empty-sub">${cabins.length===0?'Import an Excel file or tap + Add to get started':'Try adjusting your search or filters'}</div>
+    </div>`;
+    return;
+  }
+  el.innerHTML=f.map(c=>`
+    <div class="cabin-row ${c.done?'done':'pending'}" onclick="openEdit(${c._i})">
+      <div style="flex:1;min-width:0">
+        <div class="cabin-num">${c.cabin}</div>
+        <div class="cabin-deck">${c.deck}${c.notes?'  ·  <span style=\'color:var(--text3)\'>' +c.notes.substring(0,30)+(c.notes.length>30?'...':'')+'</span>':''}</div>
+      </div>
+      <span class="status-pill ${c.done?'pill-done':'pill-pend'}">${c.done?'✓ Done':'Pending'}</span>
+      <button class="del-btn" onclick="askDel(event,${c._i})">×</button>
+    </div>`).join('');
+}
+
+// ── OVERRIDE renderDecks ──────────────────────────────
+function renderDecks(){
+  const el=document.getElementById('dlist');
+  if(!decks.length){
+    el.innerHTML=`<div class="empty-state">
+      <div class="empty-icon" style="font-size:40px;opacity:.3">⊟</div>
+      <div class="empty-title">No decks yet</div>
+      <div class="empty-sub">Import an Excel or tap + Add to create a deck</div>
+    </div>`;
+    return;
+  }
+  el.innerHTML=decks.map((d,i)=>{
+    const cnt=cabins.filter(c=>c.deck===d.name).length;
+    const doneCnt=cabins.filter(c=>c.deck===d.name&&c.done).length;
+    const pct=cnt?Math.round(doneCnt/cnt*100):0;
+    const range=d.allowedRange?`<span style="font-size:11px;color:var(--text2);margin-left:6px">${d.allowedRange.min}–${d.allowedRange.max}</span>`:'';
+    return `<div class="deck-card">
+      <div class="deck-dot" style="background:hsl(${i*37%360},60%,50%)"></div>
+      <div style="flex:1;min-width:0">
+        <div class="deck-name">${d.name}${range}</div>
+        <div class="deck-range">${cnt} cabin${cnt!==1?'s':''} · ${pct}% done</div>
+        <div style="margin-top:6px;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:var(--blue);border-radius:2px;transition:width .4s"></div>
+        </div>
+      </div>
+      <div class="deck-actions">
+        <button class="btn btn-ghost" style="font-size:12px;padding:5px 10px" onclick="openEditDk(${i})">Edit</button>
+        <button class="btn btn-danger btn-icon" onclick="askDel(event,${i},\'deck\')">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── OVERRIDE renderReport ─────────────────────────────
+function renderReport(){
+  const tot=cabins.length,done=cabins.filter(c=>c.done).length,pend=tot-done;
+  const pr=tot?done/tot*100:0;
+  const pct=pr===0?0:pr<0.1?pr.toFixed(3):pr<1?pr.toFixed(2):pr<10?pr.toFixed(1):Math.round(pr);
+  const ds={};cabins.forEach(c=>{if(!ds[c.deck])ds[c.deck]={total:0,done:0};ds[c.deck].total++;if(c.done)ds[c.deck].done++;});
+  const sDecks=decks.map(d=>d.name).filter(n=>ds[n]);
+
+  const drows=sDecks.map(d=>{
+    const s=ds[d],dp=s.total?Math.round(s.done/s.total*100):0;
+    return `<div class="deck-progress-row">
+      <div class="dp-name" title="${d}">${d}</div>
+      <div class="dp-bar-wrap"><div class="dp-bar" style="width:${dp}%;background:${dp===100?'var(--green)':dp>50?'var(--blue)':'var(--amber)'}"></div></div>
+      <div class="dp-pct">${dp}%</div>
+    </div>`;
+  }).join('');
+
+  // Donut chart SVG
+  const r=54,cx=70,cy=70,circ=2*Math.PI*r;
+  const donePct=tot?done/tot:0;
+  const donutSvg=`<svg width="140" height="140" viewBox="0 0 140 140">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="16"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--blue)" stroke-width="16"
+      stroke-dasharray="${circ*donePct} ${circ*(1-donePct)}"
+      stroke-dashoffset="${circ*0.25}" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>
+    <text x="${cx}" y="${cy}" text-anchor="middle" dy="-6" font-size="20" font-weight="700" fill="var(--text)">${pct}%</text>
+    <text x="${cx}" y="${cy}" text-anchor="middle" dy="14" font-size="11" fill="var(--text2)">Complete</text>
+  </svg>`;
+
+  const email=buildEmail(tot,done,pend,pct);
+
+  document.getElementById('rbody').innerHTML=`
+    <div class="report-grid">
+      <div class="report-card">
+        <div class="report-card-title">Overall Progress</div>
+        <div style="display:flex;align-items:center;justify-content:center">${donutSvg}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem">
+          <div style="text-align:center;padding:.75rem;background:var(--green-soft);border-radius:var(--radius-sm)">
+            <div style="font-size:22px;font-weight:700;color:var(--green-text)">${done}</div>
+            <div style="font-size:11px;color:var(--green-text);font-weight:500;margin-top:2px">Done</div>
+          </div>
+          <div style="text-align:center;padding:.75rem;background:var(--amber-soft);border-radius:var(--radius-sm)">
+            <div style="font-size:22px;font-weight:700;color:var(--amber-text)">${pend}</div>
+            <div style="font-size:11px;color:var(--amber-text);font-weight:500;margin-top:2px">Pending</div>
+          </div>
+        </div>
+      </div>
+      <div class="report-card">
+        <div class="report-card-title">
+          Progress by Deck
+          <span style="font-size:11px;color:var(--text3);font-weight:400">${sDecks.length} decks</span>
+        </div>
+        <div style="max-height:240px;overflow-y:auto">${drows||'<div style="color:var(--text3);font-size:13px;padding:.5rem 0">No data yet</div>'}</div>
+      </div>
+    </div>
+    <div class="report-card" style="margin-bottom:1rem">
+      <div class="report-card-title">
+        Client Email — Daily Update
+        <button class="copy-btn" onclick="copyEmail()">Copy</button>
+      </div>
+      <div class="email-box" id="etxt">${email}</div>
+    </div>
+    <button class="btn btn-primary eb" id="expbtn" onclick="doExport()" style="width:100%;padding:14px;font-size:15px;justify-content:center;border-radius:var(--radius);margin-bottom:1rem">
+      ↓ &nbsp; Export to Excel
+    </button>`;
+}
+
+</script>
+</body>
+</html>
